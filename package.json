@@ -1,0 +1,54 @@
+{
+  "name": "integration-tests",
+  "version": "0.0.1",
+  "description": "Integration test suite for the Discovery release of the Enigma Protocol",
+  "scripts": {
+    "test-all": "test/runTests.bash",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:enigmampc/integration-tests.git"
+  },
+  "keywords": [],
+  "author": "Enigma <info@enigma.co>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/enigmampc/integration-tests/issues"
+  },
+  "homepage": "https://enigma.co",
+  "devDependencies": {},
+  "jest": {
+    "clearMocks": true,
+    "testEnvironment": "jsdom",
+    "transform": {
+      ".js$": "babel-jest"
+    },
+    "rootDir": ".",
+    "transformIgnorePatterns": [
+      "<rootDir>/node_modules/"
+    ],
+    "testPathIgnorePatterns": [
+      "/node_modules/"
+    ],
+    "testRunner": "jest-circus/runner"
+  },
+  "dependencies": {
+    "@babel/core": "^7.7.2",
+    "@babel/preset-env": "^7.7.1",
+    "axios": "^0.19.0",
+    "babel-jest": "^24.9.0",
+    "core-js": "^3.4.0",
+    "dotenv": "^8.2.0",
+    "eth-crypto": "^1.5.0",
+    "ethereumjs-abi": "^0.6.8",
+    "jayson": "^3.1.2",
+    "jest": "^24.9.0",
+    "jest-circus": "^24.9.0",
+    "jsbi": "^3.1.1",
+    "node-forge": "^0.9.1",
+    "regenerator-runtime": "^0.13.3",
+    "retry": "^0.12.0",
+    "web3": "1.0.0-beta.37"
+  }
+}
