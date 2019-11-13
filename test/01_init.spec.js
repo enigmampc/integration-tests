@@ -4,9 +4,7 @@ import os from 'os';
 import path from 'path';
 import Web3 from 'web3';
 import JSBI from 'jsbi';
-import Enigma from '../../src/Enigma';
-import utils from '../../src/enigma-utils';
-import * as eeConstants from '../../src/emitterConstants';
+import {Enigma, utils, eeConstants} from './enigmaLoader';
 import {EnigmaContract, EnigmaTokenContract, SampleContract, EnigmaContractAddress,
   EnigmaTokenContractAddress, proxyAddress, ethNodeAddr} from './contractLoader';
 import * as constants from './testConstants';

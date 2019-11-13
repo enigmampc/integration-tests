@@ -3,10 +3,8 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 import Web3 from 'web3';
-import Enigma from '../../src/Enigma';
-import utils from '../../src/enigma-utils';
+import {Enigma, utils, eeConstants} from './enigmaLoader';
 import VotingETHContract from '../../../build/contracts/VotingETH';
-import * as eeConstants from '../../src/emitterConstants';
 import {EnigmaContract, EnigmaTokenContract, EnigmaContractAddress, EnigmaTokenContractAddress,
   proxyAddress, ethNodeAddr} from './contractLoader';
 import * as constants from './testConstants';
