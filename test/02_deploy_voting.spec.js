@@ -4,7 +4,7 @@ import os from 'os';
 import path from 'path';
 import Web3 from 'web3';
 import {Enigma, utils, eeConstants} from './enigmaLoader';
-import VotingETHContract from '../../../build/contracts/VotingETH';
+import VotingETHContract from '../../build/contracts/VotingETH';
 import {EnigmaContract, EnigmaTokenContract, EnigmaContractAddress, EnigmaTokenContractAddress,
   proxyAddress, ethNodeAddr} from './contractLoader';
 import * as constants from './testConstants';
