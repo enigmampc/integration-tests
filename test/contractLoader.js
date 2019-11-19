@@ -1,15 +1,16 @@
+import path from 'path';
 import dotenv from 'dotenv';
 
-import EnigmaTokenContract from '../build/contracts/EnigmaToken';
-import SampleContract from '../build/contracts/Sample';
+import EnigmaTokenContract from '../../build/contracts/EnigmaToken';
+import SampleContract from '../../build/contracts/Sample';
 
 dotenv.config();
 
 var EnigmaContract = null;
 if (typeof process.env.SGX_MODE !== 'undefined' && process.env.SGX_MODE == 'SW') {
-  EnigmaContract = require('../build/contracts/EnigmaSimulation');
+  EnigmaContract = require('../../build/contracts/EnigmaSimulation');
 } else {
-  EnigmaContract = require('../build/contracts/Enigma'); 
+  EnigmaContract = require('../../build/contracts/Enigma');
 }
 
 var EnigmaContractAddress = null;
@@ -18,7 +19,7 @@ var proxyAddress = null;
 var ethNodeAddr = null;
 if (typeof process.env.ENIGMA_ENV !== 'undefined' && process.env.ENIGMA_ENV !== 'LOCAL') {
   const fs = require('fs');
-  const addrs = JSON.parse(fs.readFileSync('../build/contracts/addresses.json'));
+  const addrs = JSON.parse(fs.readFileSync(path.resolve(__dirname,'../../build/contracts/addresses.json')));
   EnigmaContractAddress = addrs['contract'];
   EnigmaTokenContractAddress = addrs['token'];
   proxyAddress = addrs['proxy'];
