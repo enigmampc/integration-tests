@@ -3,10 +3,9 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 import Web3 from 'web3';
-import {Enigma, utils, eeConstants} from './enigmaLoader';
+import {Enigma, utils, eeConstants, Task} from './enigmaLoader';
 import {EnigmaContract, EnigmaTokenContract, EnigmaContractAddress, EnigmaTokenContractAddress,
   proxyAddress, ethNodeAddr} from './contractLoader';
-import Task from "../../src/models/Task";
 import EventEmitter from "eventemitter3";
 import * as constants from './testConstants';
 

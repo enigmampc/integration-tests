@@ -4,9 +4,8 @@ import os from 'os';
 import path from 'path';
 import Web3 from 'web3';
 import {Enigma, utils, eeConstants} from './enigmaLoader';
-import {EnigmaContract, EnigmaTokenContract, EnigmaContractAddress, EnigmaTokenContractAddress,
-  proxyAddress, ethNodeAddr} from './contractLoader'
-import VotingETHContract from '../../build/contracts/VotingETH';
+import {EnigmaContract, EnigmaTokenContract, VotingETHContract, EnigmaContractAddress, EnigmaTokenContractAddress,
+  proxyAddress, ethNodeAddr, VotingETHContractAddress} from './contractLoader'
 import * as constants from './testConstants';
 
 
@@ -44,7 +43,7 @@ describe('Enigma tests', () => {
 
   it('initializes VotingETH contract', async () => {
     votingETHContract = new enigma.web3.eth.Contract(VotingETHContract['abi'],
-      VotingETHContract.networks['4447'].address);
+      VotingETHContractAddress);
     expect(votingETHContract.options.address).toBeTruthy();
   });
 
