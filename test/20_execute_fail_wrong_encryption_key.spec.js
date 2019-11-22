@@ -156,6 +156,6 @@ describe('Enigma tests', () => {
     expect(task.engStatus).toEqual('FAILED');
     expect(task.encryptedAbiEncodedOutputs).toBeTruthy();
     expect(task.workerTaskSig).toBeTruthy();
-  });
+  }, constants.TIMEOUT_COMPUTE);
 
 });

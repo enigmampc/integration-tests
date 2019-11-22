@@ -88,6 +88,6 @@ describe('Enigma tests', () => {
     expect(task.workerTaskSig).toBeTruthy();
     task = await enigma.decryptTaskResult(task);
     console.log('Output is: ' + task.decryptedOutput);
-  });
+  }, constants.TIMEOUT_COMPUTE);
 
 });

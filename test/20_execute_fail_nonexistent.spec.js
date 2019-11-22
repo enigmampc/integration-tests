@@ -79,6 +79,6 @@ describe('Enigma tests', () => {
     expect(task.encryptedAbiEncodedOutputs).toBeTruthy();
     expect(task.usedGas).toBeTruthy();
     expect(task.workerTaskSig).toBeTruthy();
-  });
+  }, constants.TIMEOUT_COMPUTE);
 
 });
