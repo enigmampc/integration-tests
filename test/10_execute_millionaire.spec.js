@@ -56,7 +56,7 @@ describe('Enigma tests', () => {
     let taskGasLimit = 1000000;
     let taskGasPx = utils.toGrains(1);
     task1 = await new Promise((resolve, reject) => {
-      enigma.computeTask(taskFn, taskArgs, taskGasLimit, taskGasPx, accounts[0], millionaireAddr)
+      enigma.computeTask(taskFn, taskArgs, taskGasLimit, taskGasPx, accounts[0], millionaireAddr, constants.RETRIES_COMPUTE)
         .on(eeConstants.SEND_TASK_INPUT_RESULT, (result) => resolve(result))
         .on(eeConstants.ERROR, (error) => reject(error));
     });
@@ -87,7 +87,7 @@ describe('Enigma tests', () => {
     let taskGasLimit = 1000000;
     let taskGasPx = utils.toGrains(1);
     task2 = await new Promise((resolve, reject) => {
-      enigma.computeTask(taskFn, taskArgs, taskGasLimit, taskGasPx, accounts[0], millionaireAddr)
+      enigma.computeTask(taskFn, taskArgs, taskGasLimit, taskGasPx, accounts[0], millionaireAddr, constants.RETRIES_COMPUTE)
         .on(eeConstants.SEND_TASK_INPUT_RESULT, (result) => resolve(result))
         .on(eeConstants.ERROR, (error) => reject(error));
     });
@@ -115,7 +115,7 @@ describe('Enigma tests', () => {
     let taskGasLimit = 1000000;
     let taskGasPx = utils.toGrains(1);
     task3 = await new Promise((resolve, reject) => {
-      enigma.computeTask(taskFn, taskArgs, taskGasLimit, taskGasPx, accounts[0], millionaireAddr)
+      enigma.computeTask(taskFn, taskArgs, taskGasLimit, taskGasPx, accounts[0], millionaireAddr, constants.RETRIES_COMPUTE)
         .on(eeConstants.SEND_TASK_INPUT_RESULT, (result) => resolve(result))
         .on(eeConstants.ERROR, (error) => reject(error));
     });
