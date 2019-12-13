@@ -82,7 +82,7 @@ describe('Enigma tests', () => {
         return value != workerAddress;})[0];
 
       wrongWorkerAddress = wrongWorkerAddress.toLowerCase().slice(-40); // remove leading '0x' if present
-      const {publicKey, privateKey} = enigma.obtainTaskKeyPair();
+      const {publicKey, privateKey} = enigma.obtainTaskKeyPair(sender, nonce);
       try {
         const getWorkerEncryptionKeyResult = await new Promise((resolve, reject) => {
           enigma.client.request('getWorkerEncryptionKey',
@@ -153,21 +153,32 @@ describe('Enigma tests', () => {
     } catch(e) {
       console.log('Error:', e.stack);
     }
-    scTask2 = await new Promise((resolve, reject) => {
-      createWrongWorkerTask(scTaskFn, scTaskArgs, scTaskGasLimit, scTaskGasPx, accounts[0], preCode, true)
-        .on(eeConstants.CREATE_TASK, (receipt) => resolve(receipt))
-        .on(eeConstants.ERROR, (error) => reject(error));
-    });
-    scTask2 = await new Promise((resolve, reject) => {
-      enigma.createTaskRecord(scTask2)
-        .on(eeConstants.CREATE_TASK_RECORD, (result) => resolve(result))
-        .on(eeConstants.ERROR, (error) => reject(error));
-    });
-    await new Promise((resolve, reject) => {
-      enigma.sendTaskInput(scTask2)
-        .on(eeConstants.DEPLOY_SECRET_CONTRACT_RESULT, (receipt) => resolve(receipt))
-        .on(eeConstants.ERROR, (error) => reject(error));
-    });
+    let retryCount = 0;
+    while (true) {
+      try {
+        scTask2 = await new Promise((resolve, reject) => {
+          createWrongWorkerTask(scTaskFn, scTaskArgs, scTaskGasLimit, scTaskGasPx, accounts[0], preCode, true)
+            .on(eeConstants.CREATE_TASK, (receipt) => resolve(receipt))
+            .on(eeConstants.ERROR, (error) => reject(error));
+        });
+        scTask2 = await new Promise((resolve, reject) => {
+          enigma.createTaskRecord(scTask2)
+            .on(eeConstants.CREATE_TASK_RECORD, (result) => resolve(result))
+            .on(eeConstants.ERROR, (error) => reject(error));
+        });
+        await new Promise((resolve, reject) => {
+          enigma.sendTaskInput(scTask2)
+            .on(eeConstants.DEPLOY_SECRET_CONTRACT_RESULT, (receipt) => resolve(receipt))
+            .on(eeConstants.ERROR, (error) => reject(error));
+        });
+        break;
+      } catch (err) {
+        if ((retryCount++ >= constants.RETRIES_DEPLOY) ||
+          (err !== 'Returned error: VM Exception while processing transaction: revert Wrong epoch for this task')) {
+          throw err;
+        }
+      }
+    }
   }, constants.TIMEOUT_FAILDEPLOY);
 
   it('should get the failed receipt', async () => {

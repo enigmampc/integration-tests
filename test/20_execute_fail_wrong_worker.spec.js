@@ -73,7 +73,7 @@ describe('Enigma tests', () => {
         return value != workerAddress;})[0];
 
       wrongWorkerAddress = wrongWorkerAddress.toLowerCase().slice(-40); // remove leading '0x' if present
-      const {publicKey, privateKey} = enigma.obtainTaskKeyPair();
+      const {publicKey, privateKey} = enigma.obtainTaskKeyPair(sender, nonce);
       try {
         const getWorkerEncryptionKeyResult = await new Promise((resolve, reject) => {
           enigma.client.request('getWorkerEncryptionKey',
@@ -143,7 +143,6 @@ describe('Enigma tests', () => {
     ];
     let taskGasLimit = 100000;
     let taskGasPx = utils.toGrains(1);
-
     task = await new Promise((resolve, reject) => {
       createWrongWorkerTask(taskFn, taskArgs, taskGasLimit, taskGasPx, accounts[0], calculatorAddr, false)
         .on(eeConstants.CREATE_TASK, (result) => resolve(result))

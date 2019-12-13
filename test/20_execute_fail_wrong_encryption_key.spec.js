@@ -68,7 +68,7 @@ describe('Enigma tests', () => {
       const firstBlockNumber = workerParams.firstBlockNumber;
       workerAddress = await enigma.selectWorkerGroup(scAddr, workerParams, 1)[0]; // TODO: tmp fix 1 worker
       workerAddress = workerAddress.toLowerCase().slice(-40); // remove leading '0x' if present
-      const {publicKey, privateKey} = enigma.obtainTaskKeyPair();
+      const {publicKey, privateKey} = enigma.obtainTaskKeyPair(sender, nonce);
       try {
         const getWorkerEncryptionKeyResult = await new Promise((resolve, reject) => {
           enigma.client.request('getWorkerEncryptionKey',
@@ -130,7 +130,7 @@ describe('Enigma tests', () => {
         .on(eeConstants.SEND_TASK_INPUT_RESULT, (receipt) => resolve(receipt))
         .on(eeConstants.ERROR, (error) => reject(error));
     });
-  });
+  }, constants.TIMEOUT_COMPUTE);
 
   it('should get the pending task', async () => {
     task = await enigma.getTaskRecordStatus(task);
