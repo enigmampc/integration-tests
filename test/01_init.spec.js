@@ -6,7 +6,7 @@ import Web3 from 'web3';
 import JSBI from 'jsbi';
 import {Enigma, utils, eeConstants} from './enigmaLoader';
 import {EnigmaContract, EnigmaTokenContract, SampleContract, EnigmaContractAddress,
-  EnigmaTokenContractAddress, proxyAddress, ethNodeAddr} from './contractLoader';
+  EnigmaTokenContractAddress, proxyAddress, ethNodeAddr, ExchangeRateContract} from './contractLoader';
 import * as constants from './testConstants';
 
 
@@ -58,6 +58,20 @@ describe('Init tests', () => {
         return console.log(err);
       }
     });
+  });
+
+  it('initializes Exchange Rate contract', async () => {
+      const exchangeRateContract = new enigma.web3.eth.Contract(ExchangeRateContract['abi'],
+          ExchangeRateContract.networks['4447'].address);
+      expect(exchangeRateContract.options.address).toBeTruthy();
+      await new Promise((resolve, reject) => {
+          exchangeRateContract.methods.setExchangeRate(164518).send({
+              from: accounts[0],
+              gasLimit: 300000,
+          }).on('receipt', (receipt) => resolve(receipt)).on('error', (error) => reject(error.message));
+      });
+      const exchangeRate = parseInt(await exchangeRateContract.methods.getExchangeRate().call());
+      expect(exchangeRate).toEqual(164518);
   });
 
   it('should distribute ENG tokens', async () => {

@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import EnigmaTokenContract from '../../build/contracts/EnigmaToken';
 import VotingETHContract from '../../build/contracts/VotingETH';
 import SampleContract from '../../build/contracts/Sample';
+import ExchangeRateContract from '../../build/contracts/ExchangeRate';
 
 dotenv.config();
 
@@ -20,6 +21,7 @@ var proxyAddress = null;
 var ethNodeAddr = null;
 var VotingETHContractAddress = null;
 var SampleContractAddress = null;
+var ExchangeRateContractAddress = null;
 if (typeof process.env.ENIGMA_ENV !== 'undefined' && process.env.ENIGMA_ENV !== 'LOCAL') {
   const fs = require('fs');
   const addrs = JSON.parse(fs.readFileSync(path.resolve(__dirname,'../../build/contracts/addresses.json')));
@@ -37,8 +39,10 @@ if (typeof process.env.ENIGMA_ENV !== 'undefined' && process.env.ENIGMA_ENV !== 
   proxyAddress = 'http://localhost:3346';
   ethNodeAddr = 'http://localhost:9545';
   VotingETHContractAddress = VotingContract.networks['4447'].address;
-  SampleContractAddress = SampleConctract.networks['4447'].address;
+  SampleContractAddress = SampleContract.networks['4447'].address;
+  ExchangeRateContractAddress = ExchangeRateContract.networks['4447'].address;
 }
 
-export {EnigmaContract, EnigmaTokenContract, SampleContract, VotingETHContract, EnigmaContractAddress,
-  EnigmaTokenContractAddress, proxyAddress, ethNodeAddr, VotingETHContractAddress, SampleContractAddress}
+export {EnigmaContract, EnigmaTokenContract, SampleContract, VotingETHContract, ExchangeRateContract,
+    EnigmaContractAddress, EnigmaTokenContractAddress, proxyAddress, ethNodeAddr, VotingETHContractAddress,
+    SampleContractAddress, ExchangeRateContractAddress}
