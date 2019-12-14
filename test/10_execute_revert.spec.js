@@ -84,10 +84,12 @@ describe('Enigma tests', () => {
   let task2;
   it('should execute sum_and_call, and verify output of computation', async () => {
     let taskFn = 'sum_and_call(uint256,uint256,address)';
+    // the address argument must be an existing contract address, otherwise this test that is supposed to fail
+    // will always succeed in Ganache. Using EnigmaContractAddress as long as it never has a function called 'record()'
     let taskArgs = [
       [2, 'uint256'],
       [3, 'uint256'],
-      ["0x9b1f7F645351AF3631a656421eD2e40f2802E6c0", 'address']
+      [EnigmaContractAddress, 'address']
     ];
     let taskGasLimit = 100000;
     let taskGasPx = utils.toGrains(1);
