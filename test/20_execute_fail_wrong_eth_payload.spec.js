@@ -67,7 +67,7 @@ describe('Enigma tests', () => {
     let taskGasLimit = 1000000;
     let taskGasPx = utils.toGrains(1);
     task1 = await new Promise((resolve, reject) => {
-      enigma.computeTask(taskFn, taskArgs, taskGasLimit, taskGasPx, accounts[0], votingAddr)
+      enigma.computeTask(taskFn, taskArgs, taskGasLimit, taskGasPx, accounts[0], votingAddr, contants.RETRIES_COMPUTE)
         .on(eeConstants.SEND_TASK_INPUT_RESULT, (result) => resolve(result))
         .on(eeConstants.ERROR, (error) => reject(error));
     });
