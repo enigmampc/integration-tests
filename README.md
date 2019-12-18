@@ -8,7 +8,7 @@ The contents of this repo are used in the [docker-environment](https://github.co
 
 This setup is only relevant for developers interested in manually debugging some of these tests, or wanting to tweak any particular test to adapt them to other applications:
 
-1.  Clone this repo:
+1.  Clone this repo and change folders:
 
     ```bash
     git clone git@github.com:enigmampc/integration-tests.git integration-tests/integration-tests
@@ -24,7 +24,7 @@ This setup is only relevant for developers interested in manually debugging some
     ENIGMA_ENV=COMPOSE
     ```
 
-3.  Download and save this file inside the folder you created in the previous step: [enigma-js.node.js](https://raw.githubusercontent.com/enigmampc/enigma-contract/develop/enigma-js/lib/enigma-js.node.js)
+3.  Download and save the following file: [enigma-js.node.js](https://raw.githubusercontent.com/enigmampc/enigma-contract/develop/enigma-js/lib/enigma-js.node.js) inside `enigma-js/lib`:
 
     ```bash
     wget -P enigma-js/lib https://raw.githubusercontent.com/enigmampc/enigma-contract/develop/enigma-js/lib/enigma-js.node.js
