@@ -8,42 +8,51 @@ The contents of this repo are used in the [docker-environment](https://github.co
 
 This setup is only relevant for developers interested in manually debugging some of these tests, or wanting to tweak any particular test to adapt them to other applications:
 
-1. Add an `.env` file with the following (and choose either `SW` or `HW` for `SGX_MODE)`
+1.  Clone this repo:
 
-   ```
-   SGX_MODE=SW
-   ENIGMA_ENV=COMPOSE
-   ```
+    ```bash
+    git clone git@github.com:enigmampc/integration-tests.git integration-tests/integration-tests
+    cd integration-tests/integration-tests
+    ```
 
-2. Download and save this file inside the folder you created in the previous step: [enigma-js.node.js](https://raw.githubusercontent.com/enigmampc/enigma-contract/develop/enigma-js/lib/enigma-js.node.js)
+    Note: Inside `integration-tests/integration-tests/` so when `local_init.bash` will create the `../build/` directory it won't pollute the parent directory of `integration-tests/` which is probably `$HOME/projects`.
 
-   ```bash
-   wget -P enigma-js/lib https://raw.githubusercontent.com/enigmampc/enigma-contract/develop/enigma-js/lib/enigma-js.node.js
-   ```
+2.  Add an `.env` file with the following (and choose either `SW` or `HW` for `SGX_MODE)`
 
-3. Clone [docker-environment](https://github.com/enigmampc/docker-environment) elsewhere in your computer, configure it, and start it with `docker-compose up`.
+    ```
+    SGX_MODE=SW
+    ENIGMA_ENV=COMPOSE
+    ```
 
-4. Once the network is fully up and running, run the following script once:
+3.  Download and save this file inside the folder you created in the previous step: [enigma-js.node.js](https://raw.githubusercontent.com/enigmampc/enigma-contract/develop/enigma-js/lib/enigma-js.node.js)
 
-   ```bash
-   ./local_init.bash
-   ```
+    ```bash
+    wget -P enigma-js/lib https://raw.githubusercontent.com/enigmampc/enigma-contract/develop/enigma-js/lib/enigma-js.node.js
+    ```
 
-5. Then you can run the integration tests:
+4.  Clone [docker-environment](https://github.com/enigmampc/docker-environment) elsewhere in your computer, configure it, and start it with `docker-compose up`.
 
-   ```
-   test/runTests.bash
-   ```
+5.  Once the network is fully up and running, run the following script once:
 
-   or any one individual test:
+    ```bash
+    ./local_init.bash
+    ```
 
-   ```
-   yarn test test/02_deploy_calculator.spec.js
-   ```
+6.  Then you can run the integration tests:
 
-   Please note that if you want to manually run them from inside the `test/` folder directly, you will have to copy the `.env` file there, or export these variable to the environment, for example:
+    ```
+    test/runTests.bash
+    ```
 
-   ```
-   cd test
-   SGX_MODE=SW ENIGMA_ENV=COMPOSE yarn test 02_deploy_calculator.spec.js
-   ```
+    or any one individual test:
+
+    ```
+    yarn test test/02_deploy_calculator.spec.js
+    ```
+
+    Please note that if you want to manually run them from inside the `test/` folder directly, you will have to copy the `.env` file there, or export these variable to the environment, for example:
+
+    ```
+    cd test
+    SGX_MODE=SW ENIGMA_ENV=COMPOSE yarn test 02_deploy_calculator.spec.js
+    ```
