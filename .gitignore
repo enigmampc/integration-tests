@@ -1,3 +1,5 @@
 *.log
 build/
 node_modules/
+.env
+enigma-js/
