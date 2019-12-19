@@ -6,10 +6,8 @@ import Web3 from 'web3';
 import {Enigma, utils, eeConstants} from './enigmaLoader';
 // import utils from 'enigma-js';
 // import eeConstants from 'enigma-js';
-import {EnigmaContractAddress, EnigmaTokenContractAddress, proxyAddress, ethNodeAddr} from './contractLoader';
+import {EnigmaContract, EnigmaContractAddress, EnigmaTokenContractAddress, proxyAddress, ethNodeAddr} from './contractLoader';
 import * as constants from './testConstants';
-
-const cluster_sdk  = require('../cluster-sdk/src');
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -23,8 +21,6 @@ describe('Enigma tests', () => {
     let epochSize;
 
     beforeAll(async () => {
-        await cluster_sdk.scaleWorkers({namespace: 'app', targetNum: 2});
-
         web3 = new Web3(new Web3.providers.HttpProvider(ethNodeAddr));
         accounts = await web3.eth.getAccounts();
 
@@ -59,7 +55,7 @@ describe('Enigma tests', () => {
             }, [0]);
 
 
-            if (currentEpoch[1].length > 2) {
+            if (currentEpoch[1].length > 1) {
                 break;
             }
         }
