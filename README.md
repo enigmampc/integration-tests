@@ -17,28 +17,15 @@ This setup is only relevant for developers interested in manually debugging some
 
     Note: Inside `integration-tests/integration-tests/` so when `local_init.bash` will create the `../build/` directory it won't pollute the parent directory of `integration-tests/` which is probably `$HOME/projects`.
 
-2.  Add an `.env` file with the following (and choose either `SW` or `HW` for `SGX_MODE)`
+2.  Clone [docker-environment](https://github.com/enigmampc/docker-environment) elsewhere in your computer, configure it, and start it with `docker-compose up`.
 
-    ```
-    SGX_MODE=SW
-    ENIGMA_ENV=COMPOSE
-    ```
-
-3.  Download and save the following file: [enigma-js.node.js](https://raw.githubusercontent.com/enigmampc/enigma-contract/develop/enigma-js/lib/enigma-js.node.js) inside `enigma-js/lib`:
-
-    ```bash
-    wget -P enigma-js/lib https://raw.githubusercontent.com/enigmampc/enigma-contract/develop/enigma-js/lib/enigma-js.node.js
-    ```
-
-4.  Clone [docker-environment](https://github.com/enigmampc/docker-environment) elsewhere in your computer, configure it, and start it with `docker-compose up`.
-
-5.  Once the network is fully up and running, run the following script once:
+3.  Once the network is fully up and running, run the following script once:
 
     ```bash
     ./local_init.bash
     ```
 
-6.  Then you can run the integration tests:
+4.  Then you can run the integration tests:
 
     ```
     test/runTests.bash
