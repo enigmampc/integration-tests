@@ -51,7 +51,8 @@ describe('Enigma tests', () => {
     let preCode = Buffer.from('5468697369736e6f746170726f706572736563726574636f6e74726163742e456e69676d6172756c65732e', 'hex');
 
     scTask1 = await new Promise((resolve, reject) => {
-      enigma.deploySecretContract(scTaskFn, scTaskArgs, scTaskGasLimit, scTaskGasPx, accounts[0], preCode)
+      enigma.deploySecretContract(scTaskFn, scTaskArgs, scTaskGasLimit, scTaskGasPx, accounts[0], preCode,
+        constants.RETRIES_DEPLOY)
         .on(eeConstants.DEPLOY_SECRET_CONTRACT_RESULT, (receipt) => resolve(receipt))
         .on(eeConstants.ERROR, (error) => reject(error));
     });

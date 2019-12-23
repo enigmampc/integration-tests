@@ -143,7 +143,6 @@ describe('Enigma tests', () => {
     ];
     let taskGasLimit = 100000;
     let taskGasPx = utils.toGrains(1);
-
     task = await new Promise((resolve, reject) => {
       createWrongWorkerTask(taskFn, taskArgs, taskGasLimit, taskGasPx, accounts[0], calculatorAddr, false)
         .on(eeConstants.CREATE_TASK, (result) => resolve(result))

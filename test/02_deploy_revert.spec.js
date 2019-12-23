@@ -6,6 +6,7 @@ import Web3 from 'web3';
 import {Enigma, utils, eeConstants} from './enigmaLoader';
 import {EnigmaContract, EnigmaTokenContract, EnigmaContractAddress, EnigmaTokenContractAddress,
   proxyAddress, ethNodeAddr} from './contractLoader'
+import * as constants from './testConstants';
 
 
 function sleep(ms) {
@@ -55,7 +56,8 @@ describe('Enigma tests', () => {
       console.log('Error:', e.stack);
     }
     scTask = await new Promise((resolve, reject) => {
-      enigma.deploySecretContract(scTaskFn, scTaskArgs, scTaskGasLimit, scTaskGasPx, accounts[0], preCode)
+      enigma.deploySecretContract(scTaskFn, scTaskArgs, scTaskGasLimit, scTaskGasPx, accounts[0], preCode,
+        constants.RETRIES_DEPLOY)
         .on(eeConstants.DEPLOY_SECRET_CONTRACT_RESULT, (receipt) => resolve(receipt))
         .on(eeConstants.ERROR, (error) => reject(error));
     });

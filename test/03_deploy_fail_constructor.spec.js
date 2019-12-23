@@ -57,7 +57,8 @@ describe('Enigma tests', () => {
     }
 
     scTask2 = await new Promise((resolve, reject) => {
-      enigma.deploySecretContract(scTaskFn, scTaskArgs, scTaskGasLimit, scTaskGasPx, accounts[0], preCode)
+      enigma.deploySecretContract(scTaskFn, scTaskArgs, scTaskGasLimit, scTaskGasPx, accounts[0], preCode,
+        constants.RETRIES_DEPLOY)
         .on(eeConstants.DEPLOY_SECRET_CONTRACT_RESULT, (receipt) => resolve(receipt))
         .on(eeConstants.ERROR, (error) => reject(error));
     });
