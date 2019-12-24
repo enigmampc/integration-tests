@@ -3,9 +3,11 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 import Web3 from 'web3';
-import {Enigma, utils, eeConstants} from './enigmaLoader';
-import {EnigmaContract, EnigmaTokenContract, EnigmaContractAddress, EnigmaTokenContractAddress,
-  proxyAddress, ethNodeAddr} from './contractLoader';
+import { Enigma, utils, eeConstants } from './enigmaLoader';
+import {
+  EnigmaContract, EnigmaTokenContract, EnigmaContractAddress, EnigmaTokenContractAddress,
+  proxyAddress, ethNodeAddr
+} from './contractLoader';
 import * as constants from './testConstants';
 
 
@@ -62,19 +64,19 @@ describe('Enigma tests', () => {
     do {
       await sleep(1000);
       scTask1 = await enigma.getTaskRecordStatus(scTask1);
-      process.stdout.write('Waiting. Current Task Status is '+scTask1.ethStatus+'\r');
+      process.stdout.write('Waiting. Current Task Status is ' + scTask1.ethStatus + '\r');
     } while (scTask1.ethStatus != 3);
     expect(scTask1.ethStatus).toEqual(3);
-    process.stdout.write('Completed. Final Task Status is '+scTask1.ethStatus+'\n');
+    process.stdout.write('Completed. Final Task Status is ' + scTask1.ethStatus + '\n');
   }, constants.TIMEOUT_FAILDEPLOY);
 
   it('should fail to verify deployed contract', async () => {
-    const result = await enigma.admin.isDeployed(scTask1.scAddr);
+    const result = await enigma.admin.isDeployed(scTask1.taskId);
     expect(result).toEqual(false);
   });
 
   it('should fail to get deployed contract bytecode hash', async () => {
-    const result = await enigma.admin.getCodeHash(scTask1.scAddr);
+    const result = await enigma.admin.getCodeHash(scTask1.taskId);
     expect(result).toBeFalsy;
   });
 });

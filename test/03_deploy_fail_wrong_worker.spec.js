@@ -3,9 +3,11 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 import Web3 from 'web3';
-import {Enigma, utils, eeConstants, Task} from './enigmaLoader';
-import {EnigmaContract, EnigmaTokenContract, EnigmaContractAddress, EnigmaTokenContractAddress,
-  proxyAddress, ethNodeAddr} from './contractLoader'
+import { Enigma, utils, eeConstants, Task } from './enigmaLoader';
+import {
+  EnigmaContract, EnigmaTokenContract, EnigmaContractAddress, EnigmaTokenContractAddress,
+  proxyAddress, ethNodeAddr
+} from './contractLoader'
 import EthCrypto from 'eth-crypto';
 import EventEmitter from "eventemitter3";
 import * as constants from './testConstants';
@@ -57,7 +59,7 @@ describe('Enigma tests', () => {
           // gzip the preCode
           preCodeGzip = await utils.gzip(preCode);
         } else {
-          throw Error('PreCode expected to be a Buffer, instead got '+typeof scAddrOrPreCode);
+          throw Error('PreCode expected to be a Buffer, instead got ' + typeof scAddrOrPreCode);
         }
       } else {
         preCode = '';
@@ -65,7 +67,7 @@ describe('Enigma tests', () => {
       }
 
       const preCodeHash = isContractDeploymentTask ?
-        enigma.web3.utils.soliditySha3({t: 'bytes', value: preCode.toString('hex')}) : '';
+        enigma.web3.utils.soliditySha3({ t: 'bytes', value: preCode.toString('hex') }) : '';
       const argsTranspose = (args === undefined || args.length === 0) ? [[], []] :
         args[0].map((col, i) => args.map((row) => row[i]));
       const abiEncodedArgs = utils.remove0x(enigma.web3.eth.abi.encodeParameters(argsTranspose[1], argsTranspose[0]));
@@ -78,15 +80,16 @@ describe('Enigma tests', () => {
       const firstBlockNumber = workerParams.firstBlockNumber;
       workerAddress = await enigma.selectWorkerGroup(scAddr, workerParams, 1)[0]; // TODO: tmp fix 1 worker
 
-      let wrongWorkerAddress = workerParams.workers.filter(function(value, index, arr) {
-        return value != workerAddress;})[0];
+      let wrongWorkerAddress = workerParams.workers.filter(function (value, index, arr) {
+        return value != workerAddress;
+      })[0];
 
       wrongWorkerAddress = wrongWorkerAddress.toLowerCase().slice(-40); // remove leading '0x' if present
-      const {publicKey, privateKey} = enigma.obtainTaskKeyPair(sender, nonce);
+      const { publicKey, privateKey } = enigma.obtainTaskKeyPair(sender, nonce);
       try {
         const getWorkerEncryptionKeyResult = await new Promise((resolve, reject) => {
           enigma.client.request('getWorkerEncryptionKey',
-            {workerAddress: wrongWorkerAddress, userPubKey: publicKey}, (err, response) => {
+            { workerAddress: wrongWorkerAddress, userPubKey: publicKey }, (err, response) => {
               if (err) {
                 reject(err);
                 return;
@@ -94,8 +97,8 @@ describe('Enigma tests', () => {
               resolve(response);
             });
         });
-        const {result, id} = getWorkerEncryptionKeyResult;
-        const {workerEncryptionKey, workerSig} = result;
+        const { result, id } = getWorkerEncryptionKeyResult;
+        const { workerEncryptionKey, workerSig } = result;
 
         // The signature of the workerEncryptionKey is generated
         // concatenating the following elements in a bytearray:
@@ -108,8 +111,8 @@ describe('Enigma tests', () => {
           workerEncryptionKey;
 
         // the hashing function soliditySha3 expects hex instead of bytes
-        let recAddress = EthCrypto.recover('0x'+workerSig,
-          enigma.web3.utils.soliditySha3({t: 'bytes', value: hexToVerify}));
+        let recAddress = EthCrypto.recover('0x' + workerSig,
+          enigma.web3.utils.soliditySha3({ t: 'bytes', value: hexToVerify }));
 
         recAddress = recAddress.toLowerCase().slice(-40); // remove leading '0x' if present
 
@@ -126,8 +129,8 @@ describe('Enigma tests', () => {
           const encryptedFn = utils.encryptMessage(derivedKey, fn);
           const encryptedAbiEncodedArgs = utils.encryptMessage(derivedKey, Buffer.from(abiEncodedArgsArray));
           const msg = enigma.web3.utils.soliditySha3(
-            {t: 'bytes', v: encryptedFn},
-            {t: 'bytes', v: encryptedAbiEncodedArgs},
+            { t: 'bytes', v: encryptedFn },
+            { t: 'bytes', v: encryptedAbiEncodedArgs },
           );
           const userTaskSig = await enigma.web3.eth.sign(msg, sender);
           emitter.emit(eeConstants.CREATE_TASK, new Task(scAddr, encryptedFn, encryptedAbiEncodedArgs, gasLimit, gasPx,
@@ -149,8 +152,8 @@ describe('Enigma tests', () => {
     let scTaskGasPx = utils.toGrains(1);
     let preCode;
     try {
-      preCode = fs.readFileSync(path.resolve(__dirname,'secretContracts/calculator.wasm'));
-    } catch(e) {
+      preCode = fs.readFileSync(path.resolve(__dirname, 'secretContracts/calculator.wasm'));
+    } catch (e) {
       console.log('Error:', e.stack);
     }
     let retryCount = 0;
@@ -182,24 +185,24 @@ describe('Enigma tests', () => {
   }, constants.TIMEOUT_FAILDEPLOY);
 
   it('should get the failed receipt', async () => {
-    let i=0;
+    let i = 0;
     do {
       await sleep(1000);
       scTask2 = await enigma.getTaskRecordStatus(scTask2);
-      process.stdout.write('Waiting. Current Task Status is '+scTask2.ethStatus+'\r');
+      process.stdout.write('Waiting. Current Task Status is ' + scTask2.ethStatus + '\r');
       i++;
     } while (scTask2.ethStatus === 1 && i < 6);
     expect(scTask2.ethStatus).toEqual(1);
-    process.stdout.write('Completed. Final Task Status is '+scTask2.ethStatus+'\n');
+    process.stdout.write('Completed. Final Task Status is ' + scTask2.ethStatus + '\n');
   }, constants.TIMEOUT_FAILDEPLOY);
 
   it('should fail to verify deployed contract', async () => {
-    const result = await enigma.admin.isDeployed(scTask2.scAddr);
+    const result = await enigma.admin.isDeployed(scTask2.taskId);
     expect(result).toEqual(false);
   });
 
   it('should fail to get deployed contract bytecode hash', async () => {
-    const result = await enigma.admin.getCodeHash(scTask2.scAddr);
+    const result = await enigma.admin.getCodeHash(scTask2.taskId);
     expect(result).toEqual('0x0000000000000000000000000000000000000000000000000000000000000000');
   });
 });
