@@ -6,7 +6,7 @@ import Web3 from 'web3';
 import {Enigma, utils, eeConstants} from './enigmaLoader';
 // import utils from 'enigma-js';
 // import eeConstants from 'enigma-js';
-import {EnigmaContractAddress, EnigmaTokenContractAddress, proxyAddress, ethNodeAddr} from './contractLoader';
+import {EnigmaContract, EnigmaContractAddress, EnigmaTokenContractAddress, proxyAddress, ethNodeAddr} from './contractLoader';
 import * as constants from './testConstants';
 
 const cluster_sdk  = require('../cluster-sdk/src');
