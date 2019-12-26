@@ -45,16 +45,12 @@ describe("Enigma tests", () => {
   it(
     "should deploy secret contract",
     async () => {
-      let scTaskFn = "construct()";
-      let scTaskArgs = "";
-      let scTaskGasLimit = 1000000;
-      let scTaskGasPx = utils.toGrains(1);
-      let preCode;
-      try {
-        preCode = fs.readFileSync(path.resolve(__dirname, "secretContracts/calculator.wasm"));
-      } catch (e) {
-        console.log("Error:", e.stack);
-      }
+      const scTaskFn = "construct()";
+      const scTaskArgs = "";
+      const scTaskGasLimit = 1000000;
+      const scTaskGasPx = utils.toGrains(1);
+      const preCode = fs.readFileSync(path.resolve(__dirname, "secretContracts/calculator.wasm"));
+
       scTask = await new Promise((resolve, reject) => {
         enigma
           .deploySecretContract(
