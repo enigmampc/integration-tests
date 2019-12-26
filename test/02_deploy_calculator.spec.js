@@ -13,6 +13,7 @@ import {
   ethNodeAddr
 } from "./contractLoader";
 import * as constants from "./testConstants";
+// import { beforeAll } from "jest-circus";
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -23,20 +24,18 @@ describe("Enigma tests", () => {
   let web3;
   let enigma;
   let epochSize;
-  it("initializes", async () => {
-    const provider = new Web3.providers.HttpProvider(ethNodeAddr);
-    web3 = new Web3(provider);
-    return web3.eth.getAccounts().then(result => {
-      accounts = result;
-      enigma = new Enigma(web3, EnigmaContractAddress, EnigmaTokenContractAddress, proxyAddress, {
-        gas: 4712388,
-        gasPrice: 100000000000,
-        from: accounts[0]
-      });
-      enigma.admin();
-      enigma.setTaskKeyPair("cupcake");
-      expect(Enigma.version()).toEqual("0.0.1");
+
+  beforeAll(async () => {
+    web3 = new Web3(new Web3.providers.HttpProvider(ethNodeAddr));
+    accounts = await web3.eth.getAccounts();
+    enigma = new Enigma(web3, EnigmaContractAddress, EnigmaTokenContractAddress, proxyAddress, {
+      gas: 4712388,
+      gasPrice: 100000000000,
+      from: accounts[0]
     });
+    enigma.admin();
+    enigma.setTaskKeyPair("cupcake");
+    expect(Enigma.version()).toEqual("0.0.1");
   });
 
   let scTask;
