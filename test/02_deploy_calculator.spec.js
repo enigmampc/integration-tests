@@ -1,11 +1,12 @@
 /* eslint-disable require-jsdoc */
 import fs from "fs";
-import os from "os";
 import path from "path";
 import Web3 from "web3";
-import { Enigma, utils, eeConstants } from "./enigmaLoader";
+import { Enigma } from "./enigmaLoader";
 import { EnigmaContractAddress, EnigmaTokenContractAddress, proxyAddress, ethNodeAddr } from "./contractLoader";
 import * as constants from "./testConstants";
+
+const { deploy } = require("./deploy.js");
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -32,26 +33,7 @@ describe("Enigma tests", () => {
   it(
     "should deploy secret contract",
     async () => {
-      const scTaskFn = "construct()";
-      const scTaskArgs = "";
-      const scTaskGasLimit = 1000000;
-      const scTaskGasPx = utils.toGrains(1);
-      const preCode = fs.readFileSync(path.resolve(__dirname, "secretContracts/calculator.wasm"));
-
-      const scTask = await new Promise((resolve, reject) => {
-        enigma
-          .deploySecretContract(
-            scTaskFn,
-            scTaskArgs,
-            scTaskGasLimit,
-            scTaskGasPx,
-            accounts[0],
-            preCode,
-            constants.RETRIES_DEPLOY
-          )
-          .on(eeConstants.DEPLOY_SECRET_CONTRACT_RESULT, resolve)
-          .on(eeConstants.ERROR, reject);
-      });
+      const scTask = await deploy(enigma, accounts[0], path.resolve(__dirname, "secretContracts/flipcoin.wasm"));
 
       fs.writeFileSync("/tmp/enigma/addr-calculator.txt", scTask.scAddr, "utf8");
 
