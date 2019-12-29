@@ -53,7 +53,7 @@ describe("Enigma tests", () => {
           .on(eeConstants.ERROR, reject);
       });
 
-      fs.writeFileSync(path.join(os.homedir(), ".enigma", "addr-calculator.txt"), scTask.scAddr, "utf8");
+      fs.writeFileSync("/tmp/enigma/addr-calculator.txt", scTask.scAddr, "utf8");
 
       let scTaskStatus;
       while (true) {

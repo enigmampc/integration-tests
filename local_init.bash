@@ -4,10 +4,8 @@ set -xe
 
 CONTAINER_ID=$(docker container ls | grep enigmampc/client | cut -d' ' -f1)
 
-mkdir -p ~/.enigma
-
-rm -rf ../build
-mkdir -p ../build
+rm -rf ../build ~/.enigma /tmp/enigma
+mkdir -p ../build ~/.enigma /tmp/enigma
 
 docker cp $CONTAINER_ID:/root/build/contracts ../build
 sed -e 's_http://contract_http://localhost_g;s_http://bootstrap_http://localhost_g' ../build/contracts/addresses.json > ../build/contracts/addresses.new
