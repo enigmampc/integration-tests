@@ -33,6 +33,7 @@ jobs:
           make clone-client-solo BRANCH=${BRANCH_NAME}
           make build-client DOCKER_TAG=$DOCKER_TAG
       - name: Test
+        working-directory: ./docker-environment
         run: |
           docker-compose up --exit-code-from client
           sleep 240
