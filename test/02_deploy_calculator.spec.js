@@ -6,7 +6,6 @@ import Web3 from "web3";
 import { Enigma, utils, eeConstants } from "./enigmaLoader";
 import { EnigmaContractAddress, EnigmaTokenContractAddress, proxyAddress, ethNodeAddr } from "./contractLoader";
 import * as constants from "./testConstants";
-// import { beforeAll } from "jest-circus";
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -30,9 +29,6 @@ describe("Enigma tests", () => {
     expect(Enigma.version()).toEqual("0.0.1");
   });
 
-  let scTask;
-  const homedir = os.homedir();
-
   it(
     "should deploy secret contract",
     async () => {
@@ -42,7 +38,7 @@ describe("Enigma tests", () => {
       const scTaskGasPx = utils.toGrains(1);
       const preCode = fs.readFileSync(path.resolve(__dirname, "secretContracts/calculator.wasm"));
 
-      scTask = await new Promise((resolve, reject) => {
+      const scTask = await new Promise((resolve, reject) => {
         enigma
           .deploySecretContract(
             scTaskFn,
@@ -57,37 +53,24 @@ describe("Enigma tests", () => {
           .on(eeConstants.ERROR, reject);
       });
 
-      fs.writeFile(path.join(homedir, ".enigma", "addr-calculator.txt"), scTask.scAddr, "utf8", function(err) {
-        if (err) {
-          return console.log(err);
+      fs.writeFileSync(path.join(os.homedir(), ".enigma", "addr-calculator.txt"), scTask.scAddr, "utf8");
+
+      let scTaskStatus;
+      while (true) {
+        scTaskStatus = await enigma.getTaskRecordStatus(scTask);
+        if (scTaskStatus.ethStatus == 2) {
+          break;
         }
-      });
-    },
-    constants.TIMEOUT_DEPLOY
-  );
-
-  it(
-    "should get the confirmed deploy contract task",
-    async () => {
-      do {
         await sleep(1000);
-        scTask = await enigma.getTaskRecordStatus(scTask);
-        process.stdout.write("Waiting. Current Task Status is " + scTask.ethStatus + "\r");
-      } while (scTask.ethStatus != 2);
-      expect(scTask.ethStatus).toEqual(2);
-      process.stdout.write("Completed. Final Task Status is " + scTask.ethStatus + "\n");
+      }
+      expect(scTaskStatus.ethStatus).toEqual(2);
+
+      const isDeployed = await enigma.admin.isDeployed(scTask.scAddr);
+      expect(isDeployed).toEqual(true);
+
+      const codeHash = await enigma.admin.getCodeHash(scTask.scAddr);
+      expect(codeHash).toBeTruthy();
     },
     constants.TIMEOUT_DEPLOY
   );
-
-  it("should verify deployed contract", async () => {
-    const result = await enigma.admin.isDeployed(scTask.scAddr);
-    expect(result).toEqual(true);
-  });
-
-  it("should get deployed contract bytecode hash", async () => {
-    const result = await enigma.admin.getCodeHash(scTask.scAddr);
-    expect(result).toBeTruthy;
-    console.log("Deployed contract bytecode hash is: " + result);
-  });
 });
