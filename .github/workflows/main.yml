@@ -18,8 +18,8 @@ jobs:
             git clone --single-branch --branch develop https://github.com/enigmampc/docker-environment.git
           fi
       - name: Build
-      - working-directory: ./docker-environment
-      - run: |
+        working-directory: ./docker-environment
+        run: |
           cp .env.template .env
           if [[ "$BRANCH_NAME" == "master" ]]; then
             DOCKER_TAG=latest
