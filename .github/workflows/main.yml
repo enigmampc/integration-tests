@@ -16,8 +16,8 @@ jobs:
             # otherwise we are on a feature branch, and we'll build against develop
             git clone --single-branch --branch develop https://github.com/enigmampc/docker-environment.git
           fi
-      - run: export working-directory="./docker-environment"
       - run: cp .env.template .env
+        working-directory: ./docker-environment
       - run: |
           if [[ "$BRANCH_NAME" == "master" ]]; then
             DOCKER_TAG=latest
@@ -26,12 +26,18 @@ jobs:
             DOCKER_TAG=develop
             make clone-contract BRANCH=develop
           fi
+        working-directory: ./docker-environment
       - run: sed -i "s/DOCKER_TAG=latest/DOCKER_TAG=${DOCKER_TAG}/" .env;
+        working-directory: ./docker-environment
       - run: docker pull enigmampc/worker_sw:$DOCKER_TAG
       - run: docker pull enigmampc/key_management_sw:$DOCKER_TAG
       - run: docker pull enigmampc/contract:$DOCKER_TAG
       - run: make clone-client-solo BRANCH=${BRANCH_NAME}
+        working-directory: ./docker-environment
       - run: make build-client DOCKER_TAG=$DOCKER_TAG
+        working-directory: ./docker-environment
       - run: docker-compose up --exit-code-from client
+        working-directory: ./docker-environment
       - run: sleep 240
       - run: docker-compose exec -T client make test
+        working-directory: ./docker-environment
