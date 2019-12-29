@@ -6,7 +6,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: Build
+      - name: Git Clone
         run: |
           export BRANCH_NAME="$(echo $GITHUB_REF | grep -o '[^/]\+$')"
           export MATCHING_BRANCH_DOCKER="$(git ls-remote --heads https://github.com/enigmampc/docker-environment.git ${BRANCH_NAME} | wc -l)"
@@ -17,7 +17,9 @@ jobs:
             # otherwise we are on a feature branch, and we'll build against develop
             git clone --single-branch --branch develop https://github.com/enigmampc/docker-environment.git
           fi
-          cd docker-environment
+      - name: Build
+      - working-directory: ./docker-environment
+      - run: |
           cp .env.template .env
           if [[ "$BRANCH_NAME" == "master" ]]; then
             DOCKER_TAG=latest
