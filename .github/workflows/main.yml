@@ -6,9 +6,10 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - run: export BRANCH_NAME="$(echo $GITHUB_REF | grep -o '[^/]\+$')"
-      - run: export MATCHING_BRANCH_DOCKER="$(git ls-remote --heads https://github.com/enigmampc/docker-environment.git ${BRANCH_NAME} | wc -l)"
-      - run: |
+      - name: Build
+        run: |
+          export BRANCH_NAME="$(echo $GITHUB_REF | grep -o '[^/]\+$')"
+          export MATCHING_BRANCH_DOCKER="$(git ls-remote --heads https://github.com/enigmampc/docker-environment.git ${BRANCH_NAME} | wc -l)"
           if [[ "$MATCHING_BRANCH_DOCKER" -eq 1 ]]; then
             # which includes master and develop because these always exist
             git clone --single-branch --branch ${BRANCH_NAME} https://github.com/enigmampc/docker-environment.git
@@ -16,28 +17,23 @@ jobs:
             # otherwise we are on a feature branch, and we'll build against develop
             git clone --single-branch --branch develop https://github.com/enigmampc/docker-environment.git
           fi
-      - run: cp .env.template .env
-        working-directory: ./docker-environment
-      - run: |
+          cd docker-environment
+          cp .env.template .env
           if [[ "$BRANCH_NAME" == "master" ]]; then
-            export DOCKER_TAG=latest
+            DOCKER_TAG=latest
             make clone-contract BRANCH=master
           else
-            export  DOCKER_TAG=develop
+            DOCKER_TAG=develop
             make clone-contract BRANCH=develop
           fi
-        working-directory: ./docker-environment
-      - run: sed -i "s/DOCKER_TAG=latest/DOCKER_TAG=${DOCKER_TAG}/" .env;
-        working-directory: ./docker-environment
-      - run: docker pull enigmampc/worker_sw:$DOCKER_TAG
-      - run: docker pull enigmampc/key_management_sw:$DOCKER_TAG
-      - run: docker pull enigmampc/contract:$DOCKER_TAG
-      - run: make clone-client-solo BRANCH=${BRANCH_NAME}
-        working-directory: ./docker-environment
-      - run: make build-client DOCKER_TAG=$DOCKER_TAG
-        working-directory: ./docker-environment
-      - run: docker-compose up --exit-code-from client
-        working-directory: ./docker-environment
-      - run: sleep 240
-      - run: docker-compose exec -T client make test
-        working-directory: ./docker-environment
+          sed -i "s/DOCKER_TAG=latest/DOCKER_TAG=${DOCKER_TAG}/" .env;
+          docker pull enigmampc/worker_sw:$DOCKER_TAG
+          docker pull enigmampc/key_management_sw:$DOCKER_TAG
+          docker pull enigmampc/contract:$DOCKER_TAG
+          make clone-client-solo BRANCH=${BRANCH_NAME}
+          make build-client DOCKER_TAG=$DOCKER_TAG
+      - name: Test
+        run: |
+          docker-compose up --exit-code-from client
+          sleep 240
+          docker-compose exec -T client make test
