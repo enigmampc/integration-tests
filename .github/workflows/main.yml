@@ -16,8 +16,7 @@ jobs:
             # otherwise we are on a feature branch, and we'll build against develop
             git clone --single-branch --branch develop https://github.com/enigmampc/docker-environment.git
           fi
-      - run: cd docker-environment
-      - run: cp .env.template .env
+      - run: cd docker-environment && cp .env.template .env
       - run: |
           if [[ "$BRANCH_NAME" == "master" ]]; then
             DOCKER_TAG=latest
