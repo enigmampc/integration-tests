@@ -20,10 +20,10 @@ jobs:
         working-directory: ./docker-environment
       - run: |
           if [[ "$BRANCH_NAME" == "master" ]]; then
-            DOCKER_TAG=latest
+            export DOCKER_TAG=latest
             make clone-contract BRANCH=master
           else
-            DOCKER_TAG=develop
+            export  DOCKER_TAG=develop
             make clone-contract BRANCH=develop
           fi
         working-directory: ./docker-environment
