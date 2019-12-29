@@ -5,7 +5,6 @@ on: [push]
 jobs:
   test:
     runs-on: ubuntu-latest
-    working-directory: docker-environment
     steps:
       - run: export BRANCH_NAME="$(echo $GITHUB_REF | grep -o '[^/]\+$')"
       - run: export MATCHING_BRANCH_DOCKER="$(git ls-remote --heads https://github.com/enigmampc/docker-environment.git ${BRANCH_NAME} | wc -l)"
@@ -17,6 +16,7 @@ jobs:
             # otherwise we are on a feature branch, and we'll build against develop
             git clone --single-branch --branch develop https://github.com/enigmampc/docker-environment.git
           fi
+      - run: export working-directory="./docker-environment"
       - run: cp .env.template .env
       - run: |
           if [[ "$BRANCH_NAME" == "master" ]]; then
