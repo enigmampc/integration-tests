@@ -6,8 +6,8 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - export BRANCH_NAME="$(echo $GITHUB_REF | grep -o '[^/]\+$')"
-      - export MATCHING_BRANCH_DOCKER="$(git ls-remote --heads https://github.com/enigmampc/docker-environment.git ${BRANCH_NAME} | wc -l)"
+      - run: export BRANCH_NAME="$(echo $GITHUB_REF | grep -o '[^/]\+$')"
+      - run: export MATCHING_BRANCH_DOCKER="$(git ls-remote --heads https://github.com/enigmampc/docker-environment.git ${BRANCH_NAME} | wc -l)"
       - run: |
           if [[ "$MATCHING_BRANCH_DOCKER" -eq 1 ]]; then
             # which includes master and develop because these always exist
@@ -16,7 +16,8 @@ jobs:
             # otherwise we are on a feature branch, and we'll build against develop
             git clone --single-branch --branch develop https://github.com/enigmampc/docker-environment.git
           fi
-      - cd docker-environment && cp .env.template .env
+      - run: cd docker-environment
+      - run: cp .env.template .env
       - run: |
           if [[ "$BRANCH_NAME" == "master" ]]; then
             DOCKER_TAG=latest
@@ -25,12 +26,12 @@ jobs:
             DOCKER_TAG=develop
             make clone-contract BRANCH=develop
           fi
-      - sed -i "s/DOCKER_TAG=latest/DOCKER_TAG=${DOCKER_TAG}/" .env;
-      - docker pull enigmampc/worker_sw:$DOCKER_TAG
-      - docker pull enigmampc/key_management_sw:$DOCKER_TAG
-      - docker pull enigmampc/contract:$DOCKER_TAG
-      - make clone-client-solo BRANCH=${BRANCH_NAME}
-      - make build-client DOCKER_TAG=$DOCKER_TAG
-      - docker-compose up --exit-code-from client
-      - sleep 240
-      - docker-compose exec -T client make test
+      - run: sed -i "s/DOCKER_TAG=latest/DOCKER_TAG=${DOCKER_TAG}/" .env;
+      - run: docker pull enigmampc/worker_sw:$DOCKER_TAG
+      - run: docker pull enigmampc/key_management_sw:$DOCKER_TAG
+      - run: docker pull enigmampc/contract:$DOCKER_TAG
+      - run: make clone-client-solo BRANCH=${BRANCH_NAME}
+      - run: make build-client DOCKER_TAG=$DOCKER_TAG
+      - run: docker-compose up --exit-code-from client
+      - run: sleep 240
+      - run: docker-compose exec -T client make test
