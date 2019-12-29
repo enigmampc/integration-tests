@@ -4,14 +4,7 @@ import os from "os";
 import path from "path";
 import Web3 from "web3";
 import { Enigma, utils, eeConstants } from "./enigmaLoader";
-import {
-  EnigmaContract,
-  EnigmaTokenContract,
-  EnigmaContractAddress,
-  EnigmaTokenContractAddress,
-  proxyAddress,
-  ethNodeAddr
-} from "./contractLoader";
+import { EnigmaContractAddress, EnigmaTokenContractAddress, proxyAddress, ethNodeAddr } from "./contractLoader";
 import * as constants from "./testConstants";
 // import { beforeAll } from "jest-circus";
 
@@ -23,7 +16,6 @@ describe("Enigma tests", () => {
   let accounts;
   let web3;
   let enigma;
-  let epochSize;
 
   beforeAll(async () => {
     web3 = new Web3(new Web3.providers.HttpProvider(ethNodeAddr));
@@ -39,7 +31,6 @@ describe("Enigma tests", () => {
   });
 
   let scTask;
-  let task;
   const homedir = os.homedir();
 
   it(
@@ -62,8 +53,8 @@ describe("Enigma tests", () => {
             preCode,
             constants.RETRIES_DEPLOY
           )
-          .on(eeConstants.DEPLOY_SECRET_CONTRACT_RESULT, receipt => resolve(receipt))
-          .on(eeConstants.ERROR, error => reject(error));
+          .on(eeConstants.DEPLOY_SECRET_CONTRACT_RESULT, resolve)
+          .on(eeConstants.ERROR, reject);
       });
 
       fs.writeFile(path.join(homedir, ".enigma", "addr-calculator.txt"), scTask.scAddr, "utf8", function(err) {
