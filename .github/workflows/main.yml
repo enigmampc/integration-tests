@@ -36,9 +36,10 @@ jobs:
           docker pull "enigmampc/contract:${DOCKER_TAG}"
           make clone-client-solo BRANCH="${BRANCH_NAME}"
           make build-client DOCKER_TAG="${DOCKER_TAG}"
-      - name: Start Network & Test
+      - name: Start Network
         working-directory: ./docker-environment
-        run: |
-          docker-compose up --exit-code-from client
-          sleep 240
-          docker-compose exec -T client make test
+        run: docker-compose up -d
+      - run: sleep 240
+      - name: Test
+        working-directory: ./docker-environment
+        run: docker-compose exec -T client make test
