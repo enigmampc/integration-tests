@@ -2,10 +2,14 @@ const fs = require("fs");
 const { utils, eeConstants } = require("./enigmaLoader");
 const constants = require("./testConstants");
 
-module.exports.deploy = function(enigma, account, contractWasmPath) {
-  const scTaskFn = "construct()";
-  const scTaskArgs = "";
-  const scTaskGasLimit = 1000000;
+module.exports.deploy = function(
+  enigma,
+  account,
+  contractWasmPath,
+  scTaskFn = "construct()",
+  scTaskArgs = "",
+  scTaskGasLimit = 1000000
+) {
   const scTaskGasPx = utils.toGrains(1);
   const preCode = fs.readFileSync(contractWasmPath);
 
