@@ -2,8 +2,8 @@
 const fs = require("fs");
 const Web3 = require("web3");
 import { Enigma, utils, eeConstants } from "./enigmaLoader";
-const { EnigmaContractAddress, EnigmaTokenContractAddress, proxyAddress, ethNodeAddr } = require("./contractLoader.js");
-const constants = require("./testConstants.js");
+const { EnigmaContractAddress, EnigmaTokenContractAddress, proxyAddress, ethNodeAddr } = require("./contractLoader");
+const constants = require("./testConstants");
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));

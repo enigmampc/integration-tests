@@ -1,8 +1,8 @@
 /* eslint-disable require-jsdoc */
-import fs from "fs";
+const fs = require("fs");
 import os from "os";
-import path from "path";
-import Web3 from "web3";
+const path = require("path");
+const Web3 = require("Web3");
 import { Enigma, utils, eeConstants } from "./enigmaLoader";
 import {
   EnigmaContract,
@@ -85,7 +85,12 @@ describe("Enigma tests", () => {
       const sig = EthCrypto.sign(account_zero_private_key, msg);
 
       let taskFn = "mint(bytes32,bytes32,uint256,bytes)";
-      let taskArgs = [[addr0, "bytes32"], [addr1, "bytes32"], [amount, "uint256"], [sig, "bytes"]];
+      let taskArgs = [
+        [addr0, "bytes32"],
+        [addr1, "bytes32"],
+        [amount, "uint256"],
+        [sig, "bytes"]
+      ];
       let taskGasLimit = 20000000;
       let taskGasPx = utils.toGrains(1);
       task = await new Promise((resolve, reject) => {

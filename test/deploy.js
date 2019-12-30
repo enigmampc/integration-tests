@@ -1,5 +1,5 @@
 const fs = require("fs");
-const { utils, eeConstants } = require("./enigmaLoader.js");
+const { utils, eeConstants } = require("./enigmaLoader");
 const constants = require("./testConstants");
 
 module.exports.deploy = function(enigma, account, contractWasmPath) {

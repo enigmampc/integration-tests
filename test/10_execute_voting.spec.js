@@ -1,8 +1,8 @@
 /* eslint-disable require-jsdoc */
-import fs from "fs";
+const fs = require("fs");
 import os from "os";
-import path from "path";
-import Web3 from "web3";
+const path = require("path");
+const Web3 = require("Web3");
 import { Enigma, utils, eeConstants } from "./enigmaLoader";
 import {
   EnigmaContract,
@@ -68,7 +68,11 @@ describe("Enigma tests", () => {
     async () => {
       const pollId = (await votingETHContract.methods.getPolls().call()).length - 1;
       let taskFn = "cast_vote(uint256,bytes32,uint256)";
-      let taskArgs = [[pollId, "uint256"], [addr1, "bytes32"], [1, "uint256"]];
+      let taskArgs = [
+        [pollId, "uint256"],
+        [addr1, "bytes32"],
+        [1, "uint256"]
+      ];
       let taskGasLimit = 1000000;
       let taskGasPx = utils.toGrains(1);
       task1 = await new Promise((resolve, reject) => {
@@ -107,7 +111,11 @@ describe("Enigma tests", () => {
     async () => {
       const pollId = (await votingETHContract.methods.getPolls().call()).length - 1;
       let taskFn = "cast_vote(uint256,bytes32,uint256)";
-      let taskArgs = [[pollId, "uint256"], [addr1, "bytes32"], [0, "uint256"]];
+      let taskArgs = [
+        [pollId, "uint256"],
+        [addr1, "bytes32"],
+        [0, "uint256"]
+      ];
       let taskGasLimit = 1000000;
       let taskGasPx = utils.toGrains(1);
       task2 = await new Promise((resolve, reject) => {
@@ -144,7 +152,11 @@ describe("Enigma tests", () => {
     async () => {
       const pollId = (await votingETHContract.methods.getPolls().call()).length - 1;
       let taskFn = "cast_vote(uint256,bytes32,uint256)";
-      let taskArgs = [[pollId, "uint256"], [addr2, "bytes32"], [0, "uint256"]];
+      let taskArgs = [
+        [pollId, "uint256"],
+        [addr2, "bytes32"],
+        [0, "uint256"]
+      ];
       let taskGasLimit = 1000000;
       let taskGasPx = utils.toGrains(1);
       task2 = await new Promise((resolve, reject) => {

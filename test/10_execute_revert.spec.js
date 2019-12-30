@@ -1,8 +1,8 @@
 /* eslint-disable require-jsdoc */
-import fs from "fs";
+const fs = require("fs");
 import os from "os";
-import path from "path";
-import Web3 from "web3";
+const path = require("path");
+const Web3 = require("Web3");
 import { Enigma, utils, eeConstants } from "./enigmaLoader";
 import {
   EnigmaContract,
@@ -100,7 +100,11 @@ describe("Enigma tests", () => {
       let taskFn = "sum_and_call(uint256,uint256,address)";
       // the address argument must be an existing contract address, otherwise this test that is supposed to fail
       // will always succeed in Ganache. Using EnigmaContractAddress as long as it never has a function called 'record()'
-      let taskArgs = [[2, "uint256"], [3, "uint256"], [EnigmaContractAddress, "address"]];
+      let taskArgs = [
+        [2, "uint256"],
+        [3, "uint256"],
+        [EnigmaContractAddress, "address"]
+      ];
       let taskGasLimit = 100000;
       let taskGasPx = utils.toGrains(1);
       task2 = await new Promise((resolve, reject) => {

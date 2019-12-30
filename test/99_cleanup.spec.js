@@ -1,8 +1,8 @@
 /* eslint-disable require-jsdoc */
-import fs from "fs";
-import path from "path";
+const fs = require("fs");
+const path = require("path");
 import dotenv from "dotenv";
-import Web3 from "web3";
+const Web3 = require("Web3");
 import { Enigma, utils, eeConstants } from "./enigmaLoader";
 import {
   EnigmaContract,

@@ -2,11 +2,11 @@
 const fs = require("fs");
 const path = require("path");
 const Web3 = require("web3");
-const { Enigma } = require("./enigmaLoader.js");
-const { EnigmaContractAddress, EnigmaTokenContractAddress, proxyAddress, ethNodeAddr } = require("./contractLoader.js");
-const constants = require("./testConstants.js");
+const { Enigma } = require("./enigmaLoader");
+const { EnigmaContractAddress, EnigmaTokenContractAddress, proxyAddress, ethNodeAddr } = require("./contractLoader");
+const constants = require("./testConstants");
 
-const { deploy } = require("./deploy.js");
+const { deploy } = require("./deploy");
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));

@@ -1,4 +1,4 @@
-import path from "path";
+const path = require("path");
 import dotenv from "dotenv";
 
 import EnigmaTokenContract from "../../build/contracts/EnigmaToken";
@@ -14,12 +14,12 @@ if (typeof process.env.SGX_MODE !== "undefined" && process.env.SGX_MODE == "SW")
   EnigmaContract = require("../../build/contracts/Enigma");
 }
 
-var EnigmaContractAddress = null;
-var EnigmaTokenContractAddress = null;
-var proxyAddress = null;
-var ethNodeAddr = null;
-var VotingETHContractAddress = null;
-var SampleContractAddress = null;
+let EnigmaContractAddress = null;
+let EnigmaTokenContractAddress = null;
+let proxyAddress = null;
+let ethNodeAddr = null;
+let VotingETHContractAddress = null;
+let SampleContractAddress = null;
 if (typeof process.env.ENIGMA_ENV !== "undefined" && process.env.ENIGMA_ENV !== "LOCAL") {
   const fs = require("fs");
   const addrs = JSON.parse(fs.readFileSync(path.resolve(__dirname, "../../build/contracts/addresses.json")));

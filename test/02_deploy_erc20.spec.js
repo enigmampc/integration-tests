@@ -1,8 +1,8 @@
 /* eslint-disable require-jsdoc */
-import fs from "fs";
+const fs = require("fs");
 import os from "os";
-import path from "path";
-import Web3 from "web3";
+const path = require("path");
+const Web3 = require("Web3");
 import { Enigma, utils, eeConstants } from "./enigmaLoader";
 import elliptic from "elliptic";
 import {
@@ -66,7 +66,10 @@ describe("Enigma tests", () => {
       expect(keyPair0.getPrivate().toString(16)).toEqual(account_zero_private_key);
       expect(addr0.slice(-40)).toString(utils.remove0x(accounts[0]));
 
-      let scTaskArgs = [[addr0, "bytes32"], [1000000, "uint256"]];
+      let scTaskArgs = [
+        [addr0, "bytes32"],
+        [1000000, "uint256"]
+      ];
       let scTaskGasLimit = 4000000;
       let scTaskGasPx = utils.toGrains(1);
       let preCode;

@@ -14,7 +14,7 @@ import {
 } from "./contractLoader";
 import EthCrypto from "eth-crypto";
 import EventEmitter from "eventemitter3";
-const constants = require("./testConstants.js");
+const constants = require("./testConstants");
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
