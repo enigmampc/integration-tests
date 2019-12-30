@@ -45,7 +45,10 @@ describe("Enigma tests", () => {
   let task;
   it("should execute compute task", async () => {
     let taskFn = "add(uint,uint)";
-    let taskArgs = [[24, "uint256"], [67, "uint256"]];
+    let taskArgs = [
+      [24, "uint256"],
+      [67, "uint256"]
+    ];
     let taskGasLimit = 1;
     let taskGasPx = utils.toGrains(1);
     task = await new Promise((resolve, reject) => {

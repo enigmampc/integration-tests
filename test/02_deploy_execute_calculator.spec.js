@@ -1,6 +1,7 @@
+const fs = require("fs");
 const path = require("path");
 const Web3 = require("web3");
-const { Enigma, utils, eeConstants } = require("./enigmaLoader");
+const { Enigma, eeConstants } = require("./enigmaLoader");
 const { EnigmaContractAddress, EnigmaTokenContractAddress, proxyAddress, ethNodeAddr } = require("./contractLoader");
 const constants = require("./testConstants");
 
@@ -35,6 +36,7 @@ describe("calculator", () => {
       const deployTask = await deploy(enigma, accounts[0], path.resolve(__dirname, "secretContracts/calculator.wasm"));
 
       scAddr = deployTask.scAddr;
+      fs.writeFileSync("/tmp/enigma/addr-calculator.txt", scAddr, "utf8");
 
       while (true) {
         const { ethStatus } = await enigma.getTaskRecordStatus(deployTask);
