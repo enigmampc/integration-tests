@@ -60,9 +60,6 @@ describe("calculator", () => {
   async function testComputeHelper(taskFn, taskArgs, expectedResult) {
     const computeTask = await compute(enigma, accounts[0], scAddr, taskFn, taskArgs);
 
-    const { ethStatus } = await enigma.getTaskRecordStatus(computeTask);
-    expect(ethStatus).toEqual(eeConstants.ETH_STATUS_CREATED);
-
     while (true) {
       const { ethStatus } = await enigma.getTaskRecordStatus(computeTask);
       if (ethStatus == eeConstants.ETH_STATUS_VERIFIED) {
