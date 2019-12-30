@@ -30,8 +30,7 @@
     ],
     "testPathIgnorePatterns": [
       "/node_modules/"
-    ],
-    "testRunner": "jest-circus/runner"
+    ]
   },
   "dependencies": {
     "@babel/core": "^7.7.2",
@@ -44,7 +43,6 @@
     "ethereumjs-abi": "^0.6.8",
     "jayson": "^3.1.2",
     "jest": "^24.9.0",
-    "jest-circus": "^24.9.0",
     "jsbi": "^3.1.1",
     "node-forge": "^0.9.1",
     "regenerator-runtime": "^0.13.3",
