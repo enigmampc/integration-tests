@@ -2,7 +2,7 @@
 const fs = require("fs");
 const path = require("path");
 import dotenv from "dotenv";
-const Web3 = require("Web3");
+const Web3 = require("web3");
 import { Enigma, utils, eeConstants } from "./enigmaLoader";
 import {
   EnigmaContract,

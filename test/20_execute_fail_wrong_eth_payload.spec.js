@@ -1,6 +1,6 @@
 /* eslint-disable require-jsdoc */
 const fs = require("fs");
-const Web3 = require("Web3");
+const Web3 = require("web3");
 import { Enigma, utils, eeConstants } from "./enigmaLoader";
 import {
   VotingETHContract,
