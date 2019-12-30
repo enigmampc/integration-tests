@@ -1,10 +1,10 @@
 /* eslint-disable require-jsdoc */
-import fs from "fs";
-import path from "path";
-import Web3 from "web3";
-import { Enigma } from "./enigmaLoader";
-import { EnigmaContractAddress, EnigmaTokenContractAddress, proxyAddress, ethNodeAddr } from "./contractLoader";
-import * as constants from "./testConstants";
+const fs = require("fs");
+const path = require("path");
+const Web3 = require("web3");
+const { Enigma } = require("./enigmaLoader.js");
+const { EnigmaContractAddress, EnigmaTokenContractAddress, proxyAddress, ethNodeAddr } = require("./contractLoader.js");
+const constants = require("./testConstants.js");
 
 const { deploy } = require("./deploy.js");
 

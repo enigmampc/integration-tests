@@ -104,7 +104,7 @@ module.exports = {
   // restoreMocks: false,
 
   // The root directory that Jest should scan for tests and modules within
-  rootDir: '../..',
+  rootDir: "../..",
 
   // A list of paths to directories that Jest should use to search for files in
   // roots: [
@@ -115,9 +115,7 @@ module.exports = {
   // runner: "jest-runner",
 
   // The paths to modules that run some code to configure or set up the testing environment before each test
-  setupFiles: [
-      "<rootDir>/jest.init.js"
-    ],
+  setupFiles: ["<rootDir>/jest.init.js"],
 
   // The path to a module that runs some code to configure or set up the testing framework before each test
   // setupTestFrameworkScriptFile: null,
@@ -138,8 +136,8 @@ module.exports = {
   testMatch: [
     "**/__tests__/**/*.js?(x)",
     "**/?(*.)+(spec|test).js?(x)",
-     "**/test/integrationTests/*-integration.spec.js"
-  ],
+    "**/test/integrationTests/*-integration.spec.js"
+  ]
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
   // testPathIgnorePatterns: [

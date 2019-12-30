@@ -1,8 +1,8 @@
 /* eslint-disable require-jsdoc */
-import fs from "fs";
+const fs = require("fs");
 import os from "os";
-import path from "path";
-import Web3 from "web3";
+const path = require("path");
+const Web3 = require("web3");
 import { Enigma, utils, eeConstants } from "./enigmaLoader";
 import {
   EnigmaContract,
@@ -12,7 +12,7 @@ import {
   proxyAddress,
   ethNodeAddr
 } from "./contractLoader";
-import * as constants from "./testConstants";
+const constants = require("./testConstants.js");
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
