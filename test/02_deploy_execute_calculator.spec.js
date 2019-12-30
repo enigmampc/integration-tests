@@ -115,4 +115,19 @@ describe("calculator", () => {
     },
     constants.TIMEOUT_COMPUTE
   );
+
+  it(
+    "computeTask add",
+    async () => {
+      await testComputeHelper(
+        "add(uint256,uint256)",
+        [
+          [76, "uint256"],
+          [17, "uint256"]
+        ],
+        76 + 17
+      );
+    },
+    constants.TIMEOUT_COMPUTE
+  );
 });
