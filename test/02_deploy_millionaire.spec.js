@@ -2,7 +2,7 @@
 const fs = require("fs");
 const path = require("path");
 const Web3 = require("web3");
-const { Enigma } = require("./enigmaLoader");
+const { Enigma, eeConstants } = require("./enigmaLoader");
 const { EnigmaContractAddress, EnigmaTokenContractAddress, proxyAddress, ethNodeAddr } = require("./contractLoader");
 const constants = require("./testConstants");
 
@@ -12,7 +12,7 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-describe("Enigma tests", () => {
+describe("millionaire", () => {
   let accounts;
   let web3;
   let enigma;
@@ -33,24 +33,24 @@ describe("Enigma tests", () => {
   it(
     "should deploy secret contract",
     async () => {
-      const scTask = await deploy(enigma, accounts[0], path.resolve(__dirname, "secretContracts/millionaire.wasm"));
+      const deployTask = await deploy(enigma, accounts[0], path.resolve(__dirname, "secretContracts/millionaire.wasm"));
 
-      fs.writeFileSync("/tmp/enigma/addr-millionaire.txt", scTask.scAddr, "utf8");
+      fs.writeFileSync("/tmp/enigma/addr-millionaire.txt", deployTask.scAddr, "utf8");
 
-      let scTaskStatus;
       while (true) {
-        scTaskStatus = await enigma.getTaskRecordStatus(scTask);
-        if (scTaskStatus.ethStatus == 2) {
+        const { ethStatus } = await enigma.getTaskRecordStatus(deployTask);
+        if (ethStatus == eeConstants.ETH_STATUS_VERIFIED) {
           break;
         }
+
+        expect(ethStatus).toEqual(eeConstants.ETH_STATUS_CREATED);
         await sleep(1000);
       }
-      expect(scTaskStatus.ethStatus).toEqual(2);
 
-      const isDeployed = await enigma.admin.isDeployed(scTask.scAddr);
+      const isDeployed = await enigma.admin.isDeployed(deployTask.scAddr);
       expect(isDeployed).toEqual(true);
 
-      const codeHash = await enigma.admin.getCodeHash(scTask.scAddr);
+      const codeHash = await enigma.admin.getCodeHash(deployTask.scAddr);
       expect(codeHash).toBeTruthy();
     },
     constants.TIMEOUT_DEPLOY

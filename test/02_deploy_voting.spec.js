@@ -2,7 +2,7 @@
 const fs = require("fs");
 const path = require("path");
 const Web3 = require("web3");
-const { Enigma } = require("./enigmaLoader");
+const { Enigma, eeConstants } = require("./enigmaLoader");
 const {
   EnigmaContractAddress,
   EnigmaTokenContractAddress,
@@ -43,7 +43,7 @@ describe("Enigma tests", () => {
       const { options } = new enigma.web3.eth.Contract(VotingETHContract["abi"], VotingETHContractAddress);
       expect(options.address).toEqual(VotingETHContractAddress);
 
-      const scTask = await deploy(
+      const deployTask = await deploy(
         enigma,
         accounts[0],
         path.resolve(__dirname, "secretContracts/voting.wasm"),
@@ -52,22 +52,22 @@ describe("Enigma tests", () => {
         4000000
       );
 
-      fs.writeFileSync("/tmp/enigma/addr-voting.txt", scTask.scAddr, "utf8");
+      fs.writeFileSync("/tmp/enigma/addr-voting.txt", deployTask.scAddr, "utf8");
 
-      let scTaskStatus;
       while (true) {
-        scTaskStatus = await enigma.getTaskRecordStatus(scTask);
-        if (scTaskStatus.ethStatus == 2) {
+        const { ethStatus } = await enigma.getTaskRecordStatus(deployTask);
+        if (ethStatus == eeConstants.ETH_STATUS_VERIFIED) {
           break;
         }
+
+        expect(ethStatus).toEqual(eeConstants.ETH_STATUS_CREATED);
         await sleep(1000);
       }
-      expect(scTaskStatus.ethStatus).toEqual(2);
 
-      const isDeployed = await enigma.admin.isDeployed(scTask.scAddr);
+      const isDeployed = await enigma.admin.isDeployed(deployTask.scAddr);
       expect(isDeployed).toEqual(true);
 
-      const codeHash = await enigma.admin.getCodeHash(scTask.scAddr);
+      const codeHash = await enigma.admin.getCodeHash(deployTask.scAddr);
       expect(codeHash).toBeTruthy();
     },
     constants.TIMEOUT_DEPLOY
