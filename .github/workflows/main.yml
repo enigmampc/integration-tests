@@ -19,7 +19,7 @@ jobs:
             # otherwise we are on a feature branch, and we'll build against develop
             git clone --single-branch --branch develop https://github.com/enigmampc/docker-environment.git
           fi
-      - name: Build docker images
+      - name: Build Docker Images
         working-directory: ./docker-environment
         run: |
           cp .env.template .env
@@ -36,10 +36,9 @@ jobs:
           docker pull "enigmampc/contract:${DOCKER_TAG}"
           make clone-client-solo BRANCH="${BRANCH_NAME}"
           make build-client DOCKER_TAG="${DOCKER_TAG}"
-      - name: Start Network
+      - name: Start Network & Test
         working-directory: ./docker-environment
         run: |
           docker-compose up --exit-code-from client
           sleep 240
-      - name: Test
-        run: docker-compose exec -T client make test
+          docker-compose exec -T client make test
