@@ -28,3 +28,14 @@ module.exports.deploy = function(
       .on(eeConstants.ERROR, reject);
   });
 };
+
+module.exports.compute = function(enigma, account, scAddr, taskFn, taskArgs, taskGasLimit = 1000000) {
+  const taskGasPx = utils.toGrains(1);
+
+  return new Promise((resolve, reject) => {
+    enigma
+      .computeTask(taskFn, taskArgs, taskGasLimit, taskGasPx, account, scAddr, constants.RETRIES_COMPUTE)
+      .on(eeConstants.SEND_TASK_INPUT_RESULT, resolve)
+      .on(eeConstants.ERROR, reject);
+  });
+};

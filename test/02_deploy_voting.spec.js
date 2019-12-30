@@ -13,7 +13,7 @@ const {
 } = require("./contractLoader");
 const constants = require("./testConstants");
 
-const { deploy } = require("./deploy");
+const { deploy } = require("./scUtils");
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));

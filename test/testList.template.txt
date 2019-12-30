@@ -1,4 +1,4 @@
-02_deploy_calculator.spec.js
+02_deploy_execute_calculator.spec.js
 02_deploy_flipcoin.spec.js
 02_deploy_millionaire.spec.js
 02_deploy_voting.spec.js
@@ -10,7 +10,6 @@
 03_deploy_fail_wrong_encryption_key.spec.js
 03_deploy_fail_wrong_eth_address.spec.js
 03_deploy_fail_wrong_worker.spec.js
-10_execute_calculator.spec.js
 10_execute_flipcoin.spec.js
 10_execute_millionaire.spec.js
 10_execute_voting.spec.js
