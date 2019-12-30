@@ -1,12 +1,8 @@
 /* eslint-disable require-jsdoc */
 const fs = require("fs");
-import os from "os";
-const path = require("path");
 const Web3 = require("Web3");
 import { Enigma, utils, eeConstants } from "./enigmaLoader";
 import {
-  EnigmaContract,
-  EnigmaTokenContract,
   VotingETHContract,
   EnigmaContractAddress,
   EnigmaTokenContractAddress,
@@ -51,8 +47,7 @@ describe("Enigma tests", () => {
     expect(votingETHContract.options.address).toBeTruthy();
   });
 
-  const homedir = os.homedir();
-  const votingAddr = fs.readFileSync(path.join(homedir, ".enigma", "addr-voting.txt"), "utf-8");
+  const votingAddr = fs.readFileSync("/tmp/enigma/addr-voting.txt", "utf-8");
 
   let task1;
   const addr1 = "0x0000000000000000000000000000000000000000000000000000000000000001";
