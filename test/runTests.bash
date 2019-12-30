@@ -19,6 +19,8 @@ else
 	tests="$(cat testList.template.txt)"
 fi
 
+mkdir -p /tmp/enigma
+
 # Tests will be run sequentially. If one fails, the script will exit with error
 for test in ${tests[@]}; do
 	if yarn test ${test}; then
