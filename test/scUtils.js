@@ -79,5 +79,5 @@ module.exports.testComputeHelper = async function testComputeHelper(
   expect(decryptedTaskResult.usedGas).toBeTruthy();
   expect(decryptedTaskResult.workerTaskSig).toBeTruthy();
 
-  decryptedOutputTester(decryptedTaskResult.decryptedOutput);
+  await decryptedOutputTester(decryptedTaskResult.decryptedOutput);
 };
