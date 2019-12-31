@@ -1,4 +1,3 @@
-const fs = require("fs");
 const path = require("path");
 const Web3 = require("web3");
 const { Enigma, eeConstants } = require("./enigmaLoader");
@@ -32,7 +31,6 @@ describe("flipcoin", () => {
       const deployTask = await deploy(enigma, accounts[0], path.resolve(__dirname, "secretContracts/flipcoin.wasm"));
 
       scAddr = deployTask.scAddr;
-      fs.writeFileSync("/tmp/enigma/addr-flipcoin.txt", deployTask.scAddr, "utf8");
 
       while (true) {
         const { ethStatus } = await enigma.getTaskRecordStatus(deployTask);
