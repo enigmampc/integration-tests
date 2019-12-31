@@ -5,11 +5,7 @@ const { Enigma, eeConstants } = require("./enigmaLoader");
 const { EnigmaContractAddress, EnigmaTokenContractAddress, proxyAddress, ethNodeAddr } = require("./contractLoader");
 const constants = require("./testConstants");
 
-const { deploy, compute } = require("./scUtils");
-
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
+const { deploy, testComputeHelper, sleep } = require("./scUtils");
 
 describe("calculator", () => {
   let accounts;
@@ -57,44 +53,19 @@ describe("calculator", () => {
     constants.TIMEOUT_DEPLOY
   );
 
-  async function testComputeHelper(taskFn, taskArgs, expectedResult) {
-    const computeTask = await compute(enigma, accounts[0], scAddr, taskFn, taskArgs);
-
-    while (true) {
-      const { ethStatus } = await enigma.getTaskRecordStatus(computeTask);
-      if (ethStatus == eeConstants.ETH_STATUS_VERIFIED) {
-        break;
-      }
-
-      expect(ethStatus).toEqual(eeConstants.ETH_STATUS_CREATED);
-      await sleep(1000);
-    }
-
-    const computeTaskResult = await new Promise((resolve, reject) => {
-      enigma
-        .getTaskResult(computeTask)
-        .on(eeConstants.GET_TASK_RESULT_RESULT, resolve)
-        .on(eeConstants.ERROR, reject);
-    });
-    expect(computeTaskResult.engStatus).toEqual("SUCCESS");
-    expect(computeTaskResult.encryptedAbiEncodedOutputs).toBeTruthy();
-
-    const decryptedTaskResult = await enigma.decryptTaskResult(computeTaskResult);
-    expect(decryptedTaskResult.usedGas).toBeTruthy();
-    expect(decryptedTaskResult.workerTaskSig).toBeTruthy();
-    expect(parseInt(decryptedTaskResult.decryptedOutput, 16)).toEqual(expectedResult);
-  }
-
   it(
     "computeTask sub",
     async () => {
       await testComputeHelper(
+        enigma,
+        accounts[0],
+        scAddr,
         "sub(uint256,uint256)",
         [
           [76, "uint256"],
           [17, "uint256"]
         ],
-        76 - 17
+        decryptedOutput => expect(parseInt(decryptedOutput, 16)).toEqual(76 - 17)
       );
     },
     constants.TIMEOUT_COMPUTE
@@ -104,12 +75,15 @@ describe("calculator", () => {
     "computeTask mul",
     async () => {
       await testComputeHelper(
+        enigma,
+        accounts[0],
+        scAddr,
         "mul(uint256,uint256)",
         [
           [76, "uint256"],
           [17, "uint256"]
         ],
-        76 * 17
+        decryptedOutput => expect(parseInt(decryptedOutput, 16)).toEqual(76 * 17)
       );
     },
     constants.TIMEOUT_COMPUTE
@@ -119,12 +93,15 @@ describe("calculator", () => {
     "computeTask add",
     async () => {
       await testComputeHelper(
+        enigma,
+        accounts[0],
+        scAddr,
         "add(uint256,uint256)",
         [
           [76, "uint256"],
           [17, "uint256"]
         ],
-        76 + 17
+        decryptedOutput => expect(parseInt(decryptedOutput, 16)).toEqual(76 + 17)
       );
     },
     constants.TIMEOUT_COMPUTE

@@ -2,7 +2,12 @@ const fs = require("fs");
 const { utils, eeConstants } = require("./enigmaLoader");
 const constants = require("./testConstants");
 
-module.exports.deploy = function(
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+module.exports.sleep = sleep;
+
+module.exports.deploy = function deploy(
   enigma,
   account,
   contractWasmPath,
@@ -29,7 +34,7 @@ module.exports.deploy = function(
   });
 };
 
-module.exports.compute = function(enigma, account, scAddr, taskFn, taskArgs, taskGasLimit = 1000000) {
+function compute(enigma, account, scAddr, taskFn, taskArgs, taskGasLimit = 1000000) {
   const taskGasPx = utils.toGrains(1);
 
   return new Promise((resolve, reject) => {
@@ -38,4 +43,41 @@ module.exports.compute = function(enigma, account, scAddr, taskFn, taskArgs, tas
       .on(eeConstants.SEND_TASK_INPUT_RESULT, resolve)
       .on(eeConstants.ERROR, reject);
   });
+}
+module.exports.compute = compute;
+
+module.exports.testComputeHelper = async function testComputeHelper(
+  enigma,
+  account,
+  scAddr,
+  taskFn,
+  taskArgs,
+  decryptedOutputTester
+) {
+  const computeTask = await compute(enigma, account, scAddr, taskFn, taskArgs);
+
+  while (true) {
+    const { ethStatus } = await enigma.getTaskRecordStatus(computeTask);
+    if (ethStatus == eeConstants.ETH_STATUS_VERIFIED) {
+      break;
+    }
+
+    expect(ethStatus).toEqual(eeConstants.ETH_STATUS_CREATED);
+    await sleep(1000);
+  }
+
+  const computeTaskResult = await new Promise((resolve, reject) => {
+    enigma
+      .getTaskResult(computeTask)
+      .on(eeConstants.GET_TASK_RESULT_RESULT, resolve)
+      .on(eeConstants.ERROR, reject);
+  });
+  expect(computeTaskResult.engStatus).toEqual("SUCCESS");
+  expect(computeTaskResult.encryptedAbiEncodedOutputs).toBeTruthy();
+
+  const decryptedTaskResult = await enigma.decryptTaskResult(computeTaskResult);
+  expect(decryptedTaskResult.usedGas).toBeTruthy();
+  expect(decryptedTaskResult.workerTaskSig).toBeTruthy();
+
+  decryptedOutputTester(decryptedTaskResult.decryptedOutput);
 };
