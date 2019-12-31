@@ -87,7 +87,7 @@ describe("millionaire", () => {
   it(
     "computeTask compute_richest",
     async () => {
-      await testComputeHelper(enigma, accounts[0], scAddr, "compute_richest(uint256,uint256)", [], decryptedOutput =>
+      await testComputeHelper(enigma, accounts[0], scAddr, "compute_richest()", [], decryptedOutput =>
         expect(decryptedOutput).toEqual(utils.remove0x(millionaire2))
       );
     },
