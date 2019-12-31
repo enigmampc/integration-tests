@@ -1,4 +1,3 @@
-/* eslint-disable require-jsdoc */
 const fs = require("fs");
 const path = require("path");
 const Web3 = require("web3");
@@ -6,16 +5,13 @@ const { Enigma, eeConstants } = require("./enigmaLoader");
 const { EnigmaContractAddress, EnigmaTokenContractAddress, proxyAddress, ethNodeAddr } = require("./contractLoader");
 const constants = require("./testConstants");
 
-const { deploy } = require("./scUtils");
+const { deploy, testComputeHelper, sleep } = require("./scUtils");
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-describe("Enigma tests", () => {
+describe("flipcoin", () => {
   let accounts;
   let web3;
   let enigma;
+  let scAddr;
 
   beforeAll(async () => {
     web3 = new Web3(new Web3.providers.HttpProvider(ethNodeAddr));
@@ -31,10 +27,11 @@ describe("Enigma tests", () => {
   });
 
   it(
-    "should deploy secret contract",
+    "deploy",
     async () => {
       const deployTask = await deploy(enigma, accounts[0], path.resolve(__dirname, "secretContracts/flipcoin.wasm"));
 
+      scAddr = deployTask.scAddr;
       fs.writeFileSync("/tmp/enigma/addr-flipcoin.txt", deployTask.scAddr, "utf8");
 
       while (true) {
@@ -54,5 +51,16 @@ describe("Enigma tests", () => {
       expect(codeHash).toBeTruthy();
     },
     constants.TIMEOUT_DEPLOY
+  );
+
+  it(
+    "computeTask flip",
+    async () => {
+      await testComputeHelper(enigma, accounts[0], scAddr, "flip()", [], decryptedOutput => {
+        const result = parseInt(decryptedOutput, 16);
+        expect(result === 1 || result === 0).toBe(true);
+      });
+    },
+    constants.TIMEOUT_COMPUTE
   );
 });
