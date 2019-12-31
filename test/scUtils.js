@@ -81,3 +81,24 @@ module.exports.testComputeHelper = async function testComputeHelper(
 
   await decryptedOutputTester(decryptedTaskResult.decryptedOutput);
 };
+
+module.exports.testComputeFailureHelper = async function testComputeHelper(
+  enigma,
+  account,
+  scAddr,
+  taskFn,
+  taskArgs,
+  expectedEthStatus = eeConstants.ETH_STATUS_FAILED_ETH
+) {
+  const computeTask = await compute(enigma, account, scAddr, taskFn, taskArgs);
+
+  while (true) {
+    const { ethStatus } = await enigma.getTaskRecordStatus(computeTask);
+    if (ethStatus == expectedEthStatus) {
+      break;
+    }
+
+    expect(ethStatus).toEqual(eeConstants.ETH_STATUS_CREATED);
+    await sleep(1000);
+  }
+};
