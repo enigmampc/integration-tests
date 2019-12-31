@@ -88,7 +88,7 @@ module.exports.testComputeFailureHelper = async function testComputeHelper(
   scAddr,
   taskFn,
   taskArgs,
-  expectedEthStatus = eeConstants.ETH_STATUS_FAILED_ETH
+  expectedEthStatus
 ) {
   const computeTask = await compute(enigma, account, scAddr, taskFn, taskArgs);
 

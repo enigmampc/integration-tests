@@ -70,14 +70,21 @@ describe("constructor_set_state_12", () => {
   it(
     "computeTask failure sum_and_call",
     async () => {
-      await testComputeFailureHelper(enigma, accounts[0], scAddr, "sum_and_call(uint256,uint256,address)", [
-        [2, "uint256"],
-        [3, "uint256"],
-        // the address argument must be an existing contract address, otherwise this test that is supposed to fail
-        // will always succeed in Ganache.
-        // Using EnigmaContractAddress as long as it never has a function called 'record()'
-        [EnigmaContractAddress, "address"]
-      ]);
+      await testComputeFailureHelper(
+        enigma,
+        accounts[0],
+        scAddr,
+        "sum_and_call(uint256,uint256,address)",
+        [
+          [2, "uint256"],
+          [3, "uint256"],
+          // the address argument must be an existing contract address, otherwise this test that is supposed to fail
+          // will always succeed in Ganache.
+          // Using EnigmaContractAddress as long as it never has a function called 'record()'
+          [EnigmaContractAddress, "address"]
+        ],
+        eeConstants.ETH_STATUS_FAILED_ETH
+      );
 
       await testComputeHelper(enigma, accounts[0], scAddr, "get_last_sum()", [], decryptedOutput =>
         expect(parseInt(decryptedOutput, 16)).toEqual(12)
