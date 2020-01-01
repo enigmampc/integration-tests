@@ -7,21 +7,14 @@ function sleep(ms) {
 }
 module.exports.sleep = sleep;
 
-module.exports.deploy = function deploy(
-  enigma,
-  account,
-  contractWasmPath,
-  scTaskFn = "construct()",
-  scTaskArgs = "",
-  scTaskGasLimit = 1000000
-) {
+module.exports.deploy = function deploy(enigma, account, contractWasmPath, scTaskArgs = "", scTaskGasLimit = 1000000) {
   const scTaskGasPx = utils.toGrains(1);
   const preCode = fs.readFileSync(contractWasmPath);
 
   return new Promise((resolve, reject) => {
     enigma
       .deploySecretContract(
-        scTaskFn,
+        "construct()",
         scTaskArgs,
         scTaskGasLimit,
         scTaskGasPx,
