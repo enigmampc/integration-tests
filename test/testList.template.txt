@@ -5,7 +5,6 @@ voting.test.js
 erc20.test.js
 constructor_set_state_12.test.js
 deploy_errors.test.js
-03_deploy_fail_parameters.test.js
 03_deploy_fail_wrong_encryption_key.test.js
 03_deploy_fail_wrong_eth_address.test.js
 03_deploy_fail_wrong_worker.test.js
