@@ -19,7 +19,7 @@ describe("voting", () => {
   let web3;
   let enigma;
   let scAddr;
-  let VotingSmartContract;
+  let VotingSmartContract; // https://github.com/enigmampc/enigma-contract/blob/98204a8027cb1f1472626efa6baf23795e9440c0/contracts/VotingETH.sol
 
   beforeAll(async () => {
     web3 = new Web3(new Web3.providers.HttpProvider(ethNodeAddr));
@@ -73,17 +73,19 @@ describe("voting", () => {
 
   let pollId;
 
-  it("creates a new poll on Ethereum", async () => {
-    const initialPollsLength = (await VotingSmartContract.methods.getPolls().call()).length;
-    await VotingSmartContract.methods.createPoll(50, "Is privacy important?", 30).send({
+  it("create a new poll on Ethereum", async () => {
+    // https://github.com/enigmampc/enigma-contract/blob/98204a8027cb1f1472626efa6baf23795e9440c0/contracts/VotingETH.sol#L26-L36
+    const beforePollsLength = (await VotingSmartContract.methods.getPolls().call()).length;
+    await VotingSmartContract.methods.createPoll(50, "Is privacy important?", 30 /* 30 seconds */).send({
       gas: 4712388,
       gasPrice: 100000000000,
       from: accounts[0]
     });
-    const finalPollsLength = (await VotingSmartContract.methods.getPolls().call()).length;
-    expect(finalPollsLength - initialPollsLength).toEqual(1);
+    const polls = await VotingSmartContract.methods.getPolls().call();
+    const AfterPollsLength = polls.length;
+    expect(AfterPollsLength - beforePollsLength).toEqual(1);
 
-    pollId = finalPollsLength - 1;
+    pollId = polls.length - 1;
   });
 
   const addr1 = "0x0000000000000000000000000000000000000000000000000000000000000001";
@@ -148,5 +150,33 @@ describe("voting", () => {
       );
     },
     constants.TIMEOUT_COMPUTE
+  );
+
+  it(
+    "wait for expirationTime and then computeTask tally_votes",
+    async () => {
+      const poll = (await VotingSmartContract.methods.getPolls().call())[pollId];
+      while (true) {
+        if (Date.now() / 1000 > +poll.expirationTime) {
+          break;
+        }
+        await sleep(1000);
+        /* 
+          TODO maybe test that:
+          await testComputeFailureHelper(
+            enigma,
+            accounts[0],
+            scAddr,
+            "tally_poll(uint256)",
+            [[pollId, "uint256"]],
+            eeConstants.ETH_STATUS_FAILED_ETH
+          );
+          But this could take time and mess up the timing of this whole test
+          (If expirationTime didn't pass before the call but will pass before a worker
+          can handle this request)
+        */
+      }
+    },
+    30000 /* poll expiration is 30sec */ + constants.TIMEOUT_COMPUTE
   );
 });
