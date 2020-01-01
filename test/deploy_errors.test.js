@@ -79,7 +79,7 @@ describe("deploy errors", () => {
         accounts[0],
         path.resolve(__dirname, "../secretContracts/voting.wasm"),
         "construct()",
-        [] // expecting one argument named address
+        [] // expecting one argument of type address
       );
     },
     constants.TIMEOUT_FAILDEPLOY
