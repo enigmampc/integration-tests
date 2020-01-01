@@ -104,17 +104,19 @@ module.exports.testDeployFailureHelper = async function(
   wasmPathOrBuffer,
   scTaskFn = "construct()",
   scTaskArgs = [],
-  gasLimit = 4000000
+  gasLimit = 4000000,
+  pendingStatus = eeConstants.ETH_STATUS_CREATED,
+  finalStatus = eeConstants.ETH_STATUS_FAILED
 ) {
   const deployTask = await deploy(enigma, account, wasmPathOrBuffer, scTaskArgs, gasLimit, scTaskFn);
 
   while (true) {
     const { ethStatus } = await enigma.getTaskRecordStatus(deployTask);
-    if (ethStatus == eeConstants.ETH_STATUS_FAILED) {
+    if (ethStatus == finalStatus) {
       break;
     }
 
-    expect(ethStatus).toEqual(eeConstants.ETH_STATUS_CREATED);
+    expect(ethStatus).toEqual(pendingStatus);
     await sleep(1000);
   }
 

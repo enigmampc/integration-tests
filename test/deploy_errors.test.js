@@ -50,4 +50,38 @@ describe("deploy errors", () => {
     },
     constants.TIMEOUT_FAILDEPLOY
   );
+
+  it(
+    "bad constructor name",
+    async () => {
+      // TODO fix
+      // this passes but very weird
+      // why it is verified then created?!?!
+      await testDeployFailureHelper(
+        enigma,
+        accounts[0],
+        path.resolve(__dirname, "../secretContracts/calculator.wasm"),
+        "not a valid construct()",
+        [],
+        4000000,
+        eeConstants.ETH_STATUS_VERIFIED,
+        eeConstants.ETH_STATUS_CREATED
+      );
+    },
+    constants.TIMEOUT_FAILDEPLOY
+  );
+
+  it(
+    "bad constructor arguments",
+    async () => {
+      await testDeployFailureHelper(
+        enigma,
+        accounts[0],
+        path.resolve(__dirname, "../secretContracts/voting.wasm"),
+        "construct()",
+        "" // expecting ethereum address
+      );
+    },
+    constants.TIMEOUT_FAILDEPLOY
+  );
 });
