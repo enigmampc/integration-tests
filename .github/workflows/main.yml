@@ -39,7 +39,11 @@ jobs:
       - name: Start Network
         working-directory: ./docker-environment
         run: docker-compose up -d
-      - run: sleep 240
+      - name: Wait for network to be ready
+        run: |
+          until ./is_ready.sh; do
+            sleep 1
+          done
       - name: Test
         working-directory: ./docker-environment
         run: docker-compose exec -T client make test
