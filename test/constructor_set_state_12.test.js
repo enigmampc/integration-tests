@@ -1,10 +1,10 @@
 const path = require("path");
 const Web3 = require("web3");
-const { Enigma, eeConstants } = require("./enigmaLoader");
-const { EnigmaContractAddress, EnigmaTokenContractAddress, proxyAddress, ethNodeAddr } = require("./contractLoader");
-const constants = require("./testConstants");
+const { Enigma, eeConstants } = require("../enigmaLoader");
+const { EnigmaContractAddress, EnigmaTokenContractAddress, proxyAddress, ethNodeAddr } = require("../contractLoader");
+const constants = require("../testConstants");
 
-const { deploy, testComputeHelper, sleep, testComputeFailureHelper } = require("./scUtils");
+const { deploy, testComputeHelper, sleep, testComputeFailureHelper } = require("../scUtils");
 
 describe("constructor_set_state_12", () => {
   let accounts;

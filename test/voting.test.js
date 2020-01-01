@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const Web3 = require("web3");
-const { Enigma, eeConstants } = require("./enigmaLoader");
+const { Enigma, eeConstants } = require("../enigmaLoader");
 const {
   EnigmaContractAddress,
   EnigmaTokenContractAddress,
@@ -9,10 +9,10 @@ const {
   ethNodeAddr,
   VotingETHContract,
   VotingETHContractAddress
-} = require("./contractLoader");
-const constants = require("./testConstants");
+} = require("../contractLoader");
+const constants = require("../testConstants");
 
-const { deploy, testComputeHelper, sleep, testComputeFailureHelper } = require("./scUtils");
+const { deploy, testComputeHelper, sleep, testComputeFailureHelper } = require("../scUtils");
 
 describe("voting", () => {
   let accounts;

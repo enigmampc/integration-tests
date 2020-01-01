@@ -1,13 +1,13 @@
 const path = require("path");
 const Web3 = require("web3");
-const { Enigma, eeConstants, utils } = require("./enigmaLoader");
-const { EnigmaContractAddress, EnigmaTokenContractAddress, proxyAddress, ethNodeAddr } = require("./contractLoader");
-const constants = require("./testConstants");
+const { Enigma, eeConstants, utils } = require("../enigmaLoader");
+const { EnigmaContractAddress, EnigmaTokenContractAddress, proxyAddress, ethNodeAddr } = require("../contractLoader");
+const constants = require("../testConstants");
 const ec = new (require("elliptic").ec)("secp256k1");
 const BN = require("bn.js");
 const EthCrypto = require("eth-crypto");
 
-const { deploy, testComputeHelper, sleep } = require("./scUtils");
+const { deploy, testComputeHelper, sleep } = require("../scUtils");
 
 describe("erc20", () => {
   let accounts;

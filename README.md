@@ -1,6 +1,6 @@
 # integration-tests
 
-Integration test suite for the Discovery release of the Enigma Protocol.
+Integration test suite for the Enigma Protocol.
 
 The contents of this repo are used in the [docker-environment](https://github.com/enigmampc/docker-environment) to create a `client` Docker image used to run these test automatically in our Continuous Integration (CI) environments.
 

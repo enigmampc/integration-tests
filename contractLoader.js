@@ -1,17 +1,14 @@
-const path = require("path");
-import dotenv from "dotenv";
+const EnigmaTokenContract = require("../build/contracts/EnigmaToken");
+const VotingETHContract = require("../build/contracts/VotingETH");
+const SampleContract = require("../build/contracts/Sample");
 
-import EnigmaTokenContract from "../../build/contracts/EnigmaToken";
-import VotingETHContract from "../../build/contracts/VotingETH";
-import SampleContract from "../../build/contracts/Sample";
+require("dotenv").config();
 
-dotenv.config();
-
-var EnigmaContract = null;
+let EnigmaContract = null;
 if (typeof process.env.SGX_MODE !== "undefined" && process.env.SGX_MODE == "SW") {
-  EnigmaContract = require("../../build/contracts/EnigmaSimulation");
+  EnigmaContract = require("../build/contracts/EnigmaSimulation");
 } else {
-  EnigmaContract = require("../../build/contracts/Enigma");
+  EnigmaContract = require("../build/contracts/Enigma");
 }
 
 let EnigmaContractAddress = null;
@@ -20,9 +17,11 @@ let proxyAddress = null;
 let ethNodeAddr = null;
 let VotingETHContractAddress = null;
 let SampleContractAddress = null;
+
 if (typeof process.env.ENIGMA_ENV !== "undefined" && process.env.ENIGMA_ENV !== "LOCAL") {
-  const fs = require("fs");
-  const addrs = JSON.parse(fs.readFileSync(path.resolve(__dirname, "../../build/contracts/addresses.json")));
+  const addrs = JSON.parse(
+    require("fs").readFileSync(require("path").resolve(__dirname, "../build/contracts/addresses.json"))
+  );
   EnigmaContractAddress = addrs["contract"];
   EnigmaTokenContractAddress = addrs["token"];
   proxyAddress = addrs["proxy"];
@@ -40,7 +39,7 @@ if (typeof process.env.ENIGMA_ENV !== "undefined" && process.env.ENIGMA_ENV !== 
   SampleContractAddress = SampleConctract.networks["4447"].address;
 }
 
-export {
+module.exports = {
   EnigmaContract,
   EnigmaTokenContract,
   SampleContract,

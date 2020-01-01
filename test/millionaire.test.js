@@ -1,11 +1,11 @@
 const fs = require("fs");
 const path = require("path");
 const Web3 = require("web3");
-const { Enigma, eeConstants, utils } = require("./enigmaLoader");
-const { EnigmaContractAddress, EnigmaTokenContractAddress, proxyAddress, ethNodeAddr } = require("./contractLoader");
-const constants = require("./testConstants");
+const { Enigma, eeConstants, utils } = require("../enigmaLoader");
+const { EnigmaContractAddress, EnigmaTokenContractAddress, proxyAddress, ethNodeAddr } = require("../contractLoader");
+const constants = require("../testConstants");
 
-const { deploy, testComputeHelper, sleep } = require("./scUtils");
+const { deploy, testComputeHelper, sleep } = require("../scUtils");
 
 describe("millionaire", () => {
   let accounts;

@@ -1,7 +1,7 @@
 /* eslint-disable require-jsdoc */
 const fs = require("fs");
 const Web3 = require("web3");
-import { Enigma, utils, eeConstants } from "./enigmaLoader";
+import { Enigma, utils, eeConstants } from "../enigmaLoader";
 import {
   VotingETHContract,
   EnigmaContractAddress,
@@ -9,7 +9,7 @@ import {
   proxyAddress,
   ethNodeAddr,
   VotingETHContractAddress
-} from "./contractLoader";
+} from "../contractLoader";
 import * as constants from "./testConstants";
 
 /**

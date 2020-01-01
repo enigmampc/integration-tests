@@ -1,9 +1,9 @@
 const Web3 = require("web3");
-const { Enigma, utils, eeConstants } = require("./enigmaLoader");
-const { EnigmaContractAddress, EnigmaTokenContractAddress, proxyAddress, ethNodeAddr } = require("./contractLoader");
-const constants = require("./testConstants");
+const { Enigma, utils, eeConstants } = require("../enigmaLoader");
+const { EnigmaContractAddress, EnigmaTokenContractAddress, proxyAddress, ethNodeAddr } = require("../contractLoader");
+const constants = require("../testConstants");
 
-const { deploy, testComputeHelper, sleep } = require("./scUtils");
+const { deploy, sleep } = require("../scUtils");
 
 describe("deploy errors", () => {
   let accounts;

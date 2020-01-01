@@ -3,7 +3,7 @@ const fs = require("fs");
 import os from "os";
 const path = require("path");
 const Web3 = require("web3");
-import { Enigma, utils, eeConstants } from "./enigmaLoader";
+import { Enigma, utils, eeConstants } from "../enigmaLoader";
 import {
   EnigmaContract,
   EnigmaTokenContract,
@@ -13,7 +13,7 @@ import {
   proxyAddress,
   ethNodeAddr,
   VotingETHContractAddress
-} from "./contractLoader";
+} from "../contractLoader";
 import * as constants from "./testConstants";
 
 /**

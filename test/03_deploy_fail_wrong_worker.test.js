@@ -3,7 +3,7 @@ const fs = require("fs");
 import os from "os";
 const path = require("path");
 const Web3 = require("web3");
-import { Enigma, utils, eeConstants, Task } from "./enigmaLoader";
+import { Enigma, utils, eeConstants, Task } from "../enigmaLoader";
 import {
   EnigmaContract,
   EnigmaTokenContract,
@@ -11,7 +11,7 @@ import {
   EnigmaTokenContractAddress,
   proxyAddress,
   ethNodeAddr
-} from "./contractLoader";
+} from "../contractLoader";
 import EthCrypto from "eth-crypto";
 import EventEmitter from "eventemitter3";
 import * as constants from "./testConstants";
