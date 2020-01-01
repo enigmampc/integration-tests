@@ -44,9 +44,9 @@ describe("voting", () => {
         enigma,
         accounts[0],
         path.resolve(__dirname, "../secretContracts/voting.wasm"),
-        "construct(address)",
         [[VotingETHContractAddress, "address"]],
-        4000000
+        4000000,
+        "construct(address)"
       );
 
       scAddr = deployTask.scAddr;
