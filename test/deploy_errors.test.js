@@ -35,11 +35,11 @@ describe("deploy errors", () => {
 
       while (true) {
         const { ethStatus } = await enigma.getTaskRecordStatus(deployTask);
-        if (ethStatus == eeConstants.ETH_STATUS_VERIFIED) {
+        if (ethStatus == eeConstants.ETH_STATUS_FAILED) {
           break;
         }
 
-        expect(ethStatus).toEqual(eeConstants.ETH_STATUS_FAILED);
+        expect(ethStatus).toEqual(eeConstants.ETH_STATUS_CREATED);
         await sleep(1000);
       }
 
@@ -47,7 +47,7 @@ describe("deploy errors", () => {
       expect(isDeployed).toEqual(false);
 
       const codeHash = await enigma.admin.getCodeHash(deployTask.scAddr);
-      expect(codeHash).toBeFalsy();
+      expect(codeHash).toEqual("0x0000000000000000000000000000000000000000000000000000000000000000");
     },
     constants.TIMEOUT_FAILDEPLOY
   );

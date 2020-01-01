@@ -123,6 +123,6 @@ describe("erc20", () => {
         decryptedOutput => expect(decryptedOutput).toEqual("")
       );
     },
-    constants.TIMEOUT_COMPUTE
+    constants.TIMEOUT_COMPUTE_LONG
   );
 });
