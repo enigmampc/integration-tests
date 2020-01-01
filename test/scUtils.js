@@ -45,9 +45,10 @@ module.exports.testComputeHelper = async function testComputeHelper(
   scAddr,
   taskFn,
   taskArgs,
-  decryptedOutputTester
+  decryptedOutputTester,
+  taskGasLimit = 20000000
 ) {
-  const computeTask = await compute(enigma, account, scAddr, taskFn, taskArgs);
+  const computeTask = await compute(enigma, account, scAddr, taskFn, taskArgs, taskGasLimit);
 
   while (true) {
     const { ethStatus } = await enigma.getTaskRecordStatus(computeTask);
