@@ -51,7 +51,7 @@ describe("Enigma tests", () => {
   });
 
   const homedir = os.homedir();
-  const votingAddr = fs.readFileSync(path.join(homedir, ".enigma", "addr-voting-wrongeth.txt"), "utf-8");
+  const votingAddr = fs.readFileSync("/tmp/enigma/addr-voting.txt", "utf-8");
 
   let task1;
   const addr1 = "0x0000000000000000000000000000000000000000000000000000000000000001";

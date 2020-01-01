@@ -67,7 +67,7 @@ describe("millionaire", () => {
           [millionaire1, "bytes32"],
           [1000000, "uint256"]
         ],
-        decryptedOutput => expect(decryptedOutput).toEqual("")
+        decryptedOutput => expect(decryptedOutput).toEqual("") /* void */
       );
       await testComputeHelper(
         enigma,
@@ -78,7 +78,7 @@ describe("millionaire", () => {
           [millionaire2, "bytes32"],
           [2000000, "uint256"]
         ],
-        decryptedOutput => expect(decryptedOutput).toEqual("")
+        decryptedOutput => expect(decryptedOutput).toEqual("") /* void */
       );
     },
     constants.TIMEOUT_COMPUTE

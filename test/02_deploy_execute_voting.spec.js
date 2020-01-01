@@ -18,7 +18,7 @@ describe("voting", () => {
   let accounts;
   let web3;
   let enigma;
-  let scAddr;
+  let scAddr; // https://github.com/enigmampc/enigma-core/blob/942f580ee88ecd856bb1209a47cbc29bcdd7111e/examples/eng_wasm_contracts/voting_demo/src/lib.rs
   let VotingSmartContract; // https://github.com/enigmampc/enigma-contract/blob/98204a8027cb1f1472626efa6baf23795e9440c0/contracts/VotingETH.sol
 
   beforeAll(async () => {
@@ -104,9 +104,7 @@ describe("voting", () => {
           [addr1, "bytes32"],
           [1, "uint256"]
         ],
-        decryptedOutput => {
-          expect(decryptedOutput).toEqual("");
-        }
+        decryptedOutput => expect(decryptedOutput).toEqual("") /* void */
       );
     },
     constants.TIMEOUT_COMPUTE
@@ -144,25 +142,25 @@ describe("voting", () => {
           [addr2, "bytes32"],
           [0, "uint256"]
         ],
-        decryptedOutput => {
-          expect(decryptedOutput).toEqual("");
-        }
+        decryptedOutput => expect(decryptedOutput).toEqual("") /* void */
       );
     },
     constants.TIMEOUT_COMPUTE
   );
 
   it(
-    "wait for expirationTime and then computeTask tally_votes",
+    "wait for expirationTime then computeTask tally_votes",
     async () => {
-      const poll = (await VotingSmartContract.methods.getPolls().call())[pollId];
+      const pollBeforeTally = (await VotingSmartContract.methods.getPolls().call())[pollId];
+      expect(pollBeforeTally.status).toEqual("1");
       while (true) {
-        if (Date.now() / 1000 > +poll.expirationTime) {
+        if (Date.now() / 1000 > +pollBeforeTally.expirationTime) {
           break;
         }
         await sleep(1000);
         /* 
-          TODO maybe test that:
+          TODO?
+          Maybe also test for failure in case of tally_poll before expirationTime:
           await testComputeFailureHelper(
             enigma,
             accounts[0],
@@ -176,6 +174,18 @@ describe("voting", () => {
           can handle this request)
         */
       }
+
+      await testComputeHelper(
+        enigma,
+        accounts[0],
+        scAddr,
+        "tally_poll(uint256)",
+        [[pollId, "uint256"]],
+        decryptedOutput => expect(decryptedOutput).toEqual("") /* void */
+      );
+
+      const pollAfterTally = (await VotingSmartContract.methods.getPolls().call())[pollId];
+      expect(pollAfterTally.status).toEqual("2");
     },
     30000 /* poll expiration is 30sec */ + constants.TIMEOUT_COMPUTE
   );

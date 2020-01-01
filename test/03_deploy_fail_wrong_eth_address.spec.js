@@ -70,7 +70,7 @@ describe("Enigma tests", () => {
           .on(eeConstants.ERROR, error => reject(error));
       });
 
-      fs.writeFile(path.join(homedir, ".enigma", "addr-voting-wrongeth.txt"), scTask.scAddr, "utf8", function(err) {
+      fs.writeFile("/tmp/enigma/addr-voting.txt", scTask.scAddr, "utf8", function(err) {
         if (err) {
           return console.log(err);
         }
