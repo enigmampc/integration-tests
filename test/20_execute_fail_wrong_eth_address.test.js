@@ -14,7 +14,7 @@ import {
   ethNodeAddr,
   VotingETHContractAddress
 } from "../contractLoader";
-import * as constants from "./testConstants";
+import * as constants from "../testConstants";
 
 /**
  * Be sure to run this after 03_deploy_fail_wrong_eth_address.spec

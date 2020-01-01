@@ -7,21 +7,21 @@ function sleep(ms) {
 }
 module.exports.sleep = sleep;
 
-module.exports.deploy = function deploy(
+function deploy(
   enigma,
   account,
-  contractWasmPathOrBuffer,
+  wasmPathOrBuffer,
   scTaskArgs = [],
-  scTaskGasLimit = 4000000
+  scTaskGasLimit = 4000000,
+  scTaskFn = "construct()"
 ) {
   const scTaskGasPx = utils.toGrains(1);
-  const preCode =
-    typeof contractWasmPathOrBuffer === "string" ? fs.readFileSync(contractWasmPathOrBuffer) : contractWasmPathOrBuffer;
+  const preCode = typeof wasmPathOrBuffer === "string" ? fs.readFileSync(wasmPathOrBuffer) : wasmPathOrBuffer;
 
   return new Promise((resolve, reject) => {
     enigma
       .deploySecretContract(
-        "construct()",
+        scTaskFn,
         scTaskArgs,
         scTaskGasLimit,
         scTaskGasPx,
@@ -32,7 +32,8 @@ module.exports.deploy = function deploy(
       .on(eeConstants.DEPLOY_SECRET_CONTRACT_RESULT, resolve)
       .on(eeConstants.ERROR, reject);
   });
-};
+}
+module.exports.deploy = deploy;
 
 function compute(enigma, account, scAddr, taskFn, taskArgs, taskGasLimit = 1000000) {
   const taskGasPx = utils.toGrains(1);
@@ -46,7 +47,7 @@ function compute(enigma, account, scAddr, taskFn, taskArgs, taskGasLimit = 10000
 }
 module.exports.compute = compute;
 
-module.exports.testComputeHelper = async function testComputeHelper(
+module.exports.testComputeHelper = async function(
   enigma,
   account,
   scAddr,
@@ -83,14 +84,7 @@ module.exports.testComputeHelper = async function testComputeHelper(
   await decryptedOutputTester(decryptedTaskResult.decryptedOutput);
 };
 
-module.exports.testComputeFailureHelper = async function testComputeHelper(
-  enigma,
-  account,
-  scAddr,
-  taskFn,
-  taskArgs,
-  expectedEthStatus
-) {
+module.exports.testComputeFailureHelper = async function(enigma, account, scAddr, taskFn, taskArgs, expectedEthStatus) {
   const computeTask = await compute(enigma, account, scAddr, taskFn, taskArgs);
 
   while (true) {
@@ -102,4 +96,31 @@ module.exports.testComputeFailureHelper = async function testComputeHelper(
     expect(ethStatus).toEqual(eeConstants.ETH_STATUS_CREATED);
     await sleep(1000);
   }
+};
+
+module.exports.testDeployFailureHelper = async function(
+  enigma,
+  account,
+  wasmPathOrBuffer,
+  scTaskFn = "construct()",
+  scTaskArgs = [],
+  gasLimit = 4000000
+) {
+  const deployTask = await deploy(enigma, account, wasmPathOrBuffer, scTaskArgs, gasLimit, scTaskFn);
+
+  while (true) {
+    const { ethStatus } = await enigma.getTaskRecordStatus(deployTask);
+    if (ethStatus == eeConstants.ETH_STATUS_FAILED) {
+      break;
+    }
+
+    expect(ethStatus).toEqual(eeConstants.ETH_STATUS_CREATED);
+    await sleep(1000);
+  }
+
+  const isDeployed = await enigma.admin.isDeployed(deployTask.scAddr);
+  expect(isDeployed).toEqual(false);
+
+  const codeHash = await enigma.admin.getCodeHash(deployTask.scAddr);
+  expect(codeHash).toEqual("0x0000000000000000000000000000000000000000000000000000000000000000");
 };

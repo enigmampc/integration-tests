@@ -12,7 +12,7 @@ import {
   proxyAddress,
   ethNodeAddr
 } from "../contractLoader";
-import * as constants from "./testConstants";
+import * as constants from "../testConstants";
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));

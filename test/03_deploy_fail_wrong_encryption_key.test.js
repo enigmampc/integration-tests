@@ -13,7 +13,7 @@ import {
   ethNodeAddr
 } from "../contractLoader";
 import EventEmitter from "eventemitter3";
-import * as constants from "./testConstants";
+import * as constants from "../testConstants";
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));

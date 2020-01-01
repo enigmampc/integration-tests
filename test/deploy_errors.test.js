@@ -4,7 +4,7 @@ const { Enigma, utils, eeConstants } = require("../enigmaLoader");
 const { EnigmaContractAddress, EnigmaTokenContractAddress, proxyAddress, ethNodeAddr } = require("../contractLoader");
 const constants = require("../testConstants");
 
-const { deploy, sleep } = require("../scUtils");
+const { deploy, sleep, testDeployFailureHelper } = require("../scUtils");
 
 describe("deploy errors", () => {
   let accounts;
@@ -27,27 +27,11 @@ describe("deploy errors", () => {
   it(
     "bad bytecode",
     async () => {
-      const deployTask = await deploy(
+      await testDeployFailureHelper(
         enigma,
         accounts[0],
         Buffer.from("5468697369736e6f746170726f706572736563726574636f6e74726163742e456e69676d6172756c65732e", "hex")
       );
-
-      while (true) {
-        const { ethStatus } = await enigma.getTaskRecordStatus(deployTask);
-        if (ethStatus == eeConstants.ETH_STATUS_FAILED) {
-          break;
-        }
-
-        expect(ethStatus).toEqual(eeConstants.ETH_STATUS_CREATED);
-        await sleep(1000);
-      }
-
-      const isDeployed = await enigma.admin.isDeployed(deployTask.scAddr);
-      expect(isDeployed).toEqual(false);
-
-      const codeHash = await enigma.admin.getCodeHash(deployTask.scAddr);
-      expect(codeHash).toEqual("0x0000000000000000000000000000000000000000000000000000000000000000");
     },
     constants.TIMEOUT_FAILDEPLOY
   );
@@ -55,29 +39,14 @@ describe("deploy errors", () => {
   it(
     "out of gas",
     async () => {
-      const deployTask = await deploy(
+      await testDeployFailureHelper(
         enigma,
         accounts[0],
         path.resolve(__dirname, "../secretContracts/calculator.wasm"),
+        "constructor()",
         [],
         1
       );
-
-      while (true) {
-        const { ethStatus } = await enigma.getTaskRecordStatus(deployTask);
-        if (ethStatus == eeConstants.ETH_STATUS_FAILED) {
-          break;
-        }
-
-        expect(ethStatus).toEqual(eeConstants.ETH_STATUS_CREATED);
-        await sleep(1000);
-      }
-
-      const isDeployed = await enigma.admin.isDeployed(deployTask.scAddr);
-      expect(isDeployed).toEqual(false);
-
-      const codeHash = await enigma.admin.getCodeHash(deployTask.scAddr);
-      expect(codeHash).toEqual("0x0000000000000000000000000000000000000000000000000000000000000000");
     },
     constants.TIMEOUT_FAILDEPLOY
   );

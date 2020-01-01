@@ -10,7 +10,7 @@ import {
   ethNodeAddr,
   VotingETHContractAddress
 } from "../contractLoader";
-import * as constants from "./testConstants";
+import * as constants from "../testConstants";
 
 /**
  * Be sure to run this after 02_deploy_voting.spec
