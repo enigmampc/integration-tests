@@ -7,7 +7,7 @@ function sleep(ms) {
 }
 module.exports.sleep = sleep;
 
-module.exports.deploy = function deploy(enigma, account, contractWasmPath, scTaskArgs = "", scTaskGasLimit = 1000000) {
+module.exports.deploy = function deploy(enigma, account, contractWasmPath, scTaskArgs = "", scTaskGasLimit = 4000000) {
   const scTaskGasPx = utils.toGrains(1);
   const preCode = fs.readFileSync(contractWasmPath);
 
