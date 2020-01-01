@@ -40,6 +40,7 @@ jobs:
         working-directory: ./docker-environment
         run: docker-compose up -d
       - name: Wait for network to be ready
+        working-directory: ./docker-environment
         run: |
           until ./is_ready.sh; do
             sleep 1
