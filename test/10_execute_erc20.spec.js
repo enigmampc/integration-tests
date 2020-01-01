@@ -46,7 +46,7 @@ describe("Enigma tests", () => {
 
   const homedir = os.homedir();
 
-  const erc20Addr = fs.readFileSync(path.join(homedir, ".enigma", "addr-erc20.txt"), "utf-8");
+  const erc20Addr = fs.readFileSync("/tmp/enigma/addr-erc20.txt", "utf-8");
   let task;
   it(
     "should execute compute task",

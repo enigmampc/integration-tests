@@ -4,7 +4,7 @@ const Web3 = require("web3");
 const { Enigma, eeConstants, utils } = require("./enigmaLoader");
 const { EnigmaContractAddress, EnigmaTokenContractAddress, proxyAddress, ethNodeAddr } = require("./contractLoader");
 const constants = require("./testConstants");
-const ec = new require("elliptic").ec("secp256k1");
+const ec = new (require("elliptic").ec)("secp256k1");
 
 const { deploy, testComputeHelper, sleep } = require("./scUtils");
 
@@ -52,7 +52,7 @@ describe("erc20", () => {
       ]);
 
       scAddr = deployTask.scAddr;
-      fs.writeFileSync("tmp/enigma/addr-erc20.txt", scAddr, "utf8");
+      fs.writeFileSync("/tmp/enigma/addr-erc20.txt", scAddr, "utf8");
 
       while (true) {
         const { ethStatus } = await enigma.getTaskRecordStatus(deployTask);
