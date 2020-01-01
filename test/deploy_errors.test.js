@@ -1,3 +1,4 @@
+const path = require("path");
 const Web3 = require("web3");
 const { Enigma, utils, eeConstants } = require("../enigmaLoader");
 const { EnigmaContractAddress, EnigmaTokenContractAddress, proxyAddress, ethNodeAddr } = require("../contractLoader");
@@ -9,7 +10,6 @@ describe("deploy errors", () => {
   let accounts;
   let web3;
   let enigma;
-  let scAddr;
 
   beforeAll(async () => {
     web3 = new Web3(new Web3.providers.HttpProvider(ethNodeAddr));
@@ -31,6 +31,36 @@ describe("deploy errors", () => {
         enigma,
         accounts[0],
         Buffer.from("5468697369736e6f746170726f706572736563726574636f6e74726163742e456e69676d6172756c65732e", "hex")
+      );
+
+      while (true) {
+        const { ethStatus } = await enigma.getTaskRecordStatus(deployTask);
+        if (ethStatus == eeConstants.ETH_STATUS_FAILED) {
+          break;
+        }
+
+        expect(ethStatus).toEqual(eeConstants.ETH_STATUS_CREATED);
+        await sleep(1000);
+      }
+
+      const isDeployed = await enigma.admin.isDeployed(deployTask.scAddr);
+      expect(isDeployed).toEqual(false);
+
+      const codeHash = await enigma.admin.getCodeHash(deployTask.scAddr);
+      expect(codeHash).toEqual("0x0000000000000000000000000000000000000000000000000000000000000000");
+    },
+    constants.TIMEOUT_FAILDEPLOY
+  );
+
+  it(
+    "out of gas",
+    async () => {
+      const deployTask = await deploy(
+        enigma,
+        accounts[0],
+        path.resolve(__dirname, "../secretContracts/calculator.wasm"),
+        [],
+        1
       );
 
       while (true) {

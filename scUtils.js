@@ -11,7 +11,7 @@ module.exports.deploy = function deploy(
   enigma,
   account,
   contractWasmPathOrBuffer,
-  scTaskArgs = "",
+  scTaskArgs = [],
   scTaskGasLimit = 4000000
 ) {
   const scTaskGasPx = utils.toGrains(1);
