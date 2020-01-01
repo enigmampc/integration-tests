@@ -47,7 +47,7 @@ describe("erc20", () => {
       expect(keyPair0.getPrivate().toString(16)).toEqual(account_zero_private_key);
       expect(addr0.slice(-40)).toString(utils.remove0x(accounts[0]));
 
-      const deployTask = await deploy(enigma, accounts[0], path.resolve(__dirname, "secretContracts/erc20.wasm"), [
+      const deployTask = await deploy(enigma, accounts[0], path.resolve(__dirname, "../secretContracts/erc20.wasm"), [
         [addr0, "bytes32"],
         [1000000, "uint256"]
       ]);

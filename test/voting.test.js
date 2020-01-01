@@ -43,7 +43,7 @@ describe("voting", () => {
       const deployTask = await deploy(
         enigma,
         accounts[0],
-        path.resolve(__dirname, "secretContracts/voting.wasm"),
+        path.resolve(__dirname, "../secretContracts/voting.wasm"),
         "construct(address)",
         [[VotingETHContractAddress, "address"]],
         4000000

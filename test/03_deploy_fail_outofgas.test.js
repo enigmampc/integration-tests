@@ -51,7 +51,7 @@ describe("Enigma tests", () => {
       let scTaskGasPx = utils.toGrains(1);
       let preCode;
       try {
-        preCode = fs.readFileSync(path.resolve(__dirname, "secretContracts/calculator.wasm"));
+        preCode = fs.readFileSync(path.resolve(__dirname, "../secretContracts/calculator.wasm"));
       } catch (e) {
         console.log("Error:", e.stack);
       }

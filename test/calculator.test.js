@@ -29,7 +29,7 @@ describe("calculator", () => {
   it(
     "deploy",
     async () => {
-      const deployTask = await deploy(enigma, accounts[0], path.resolve(__dirname, "secretContracts/calculator.wasm"));
+      const deployTask = await deploy(enigma, accounts[0], path.resolve(__dirname, "../secretContracts/calculator.wasm"));
 
       scAddr = deployTask.scAddr;
       fs.writeFileSync("/tmp/enigma/addr-calculator.txt", scAddr, "utf8");

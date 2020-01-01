@@ -31,7 +31,7 @@ describe("constructor_set_state_12", () => {
       const deployTask = await deploy(
         enigma,
         accounts[0],
-        path.resolve(__dirname, "secretContracts/constructor_set_state_12.wasm")
+        path.resolve(__dirname, "../secretContracts/constructor_set_state_12.wasm")
       );
 
       scAddr = deployTask.scAddr;

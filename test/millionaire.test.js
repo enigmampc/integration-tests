@@ -29,7 +29,7 @@ describe("millionaire", () => {
   it(
     "deploy",
     async () => {
-      const deployTask = await deploy(enigma, accounts[0], path.resolve(__dirname, "secretContracts/millionaire.wasm"));
+      const deployTask = await deploy(enigma, accounts[0], path.resolve(__dirname, "../secretContracts/millionaire.wasm"));
       scAddr = deployTask.scAddr;
       fs.writeFileSync("/tmp/enigma/addr-millionaire.txt", deployTask.scAddr, "utf8");
 

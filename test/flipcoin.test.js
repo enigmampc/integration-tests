@@ -28,7 +28,7 @@ describe("flipcoin", () => {
   it(
     "deploy",
     async () => {
-      const deployTask = await deploy(enigma, accounts[0], path.resolve(__dirname, "secretContracts/flipcoin.wasm"));
+      const deployTask = await deploy(enigma, accounts[0], path.resolve(__dirname, "../secretContracts/flipcoin.wasm"));
 
       scAddr = deployTask.scAddr;
 
