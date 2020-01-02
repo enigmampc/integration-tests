@@ -43,7 +43,7 @@ jobs:
         working-directory: ./docker-environment
         run: |
           until ./is_ready.sh; do
-            sleep 1
+            sleep 10
           done
       - name: Test
         working-directory: ./docker-environment
