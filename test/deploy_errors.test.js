@@ -55,8 +55,8 @@ describe("deploy errors", () => {
     "bad constructor name",
     async () => {
       // TODO fix
-      // this passes but very weird
-      // why it is verified then created?!?!
+      // this passes but very weirdly
+      // why is this VERIFIED then CREATED?!?!
       await testDeployFailureHelper(
         enigma,
         accounts[0],
