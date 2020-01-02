@@ -52,11 +52,11 @@ describe("deploy errors", () => {
   );
 
   it.skip(
-    "bad constructor name",
+    "constructor signature isn't exists",
     async () => {
       /*
         TODO fix a bug in core
-        This deployment task becomes ETH_STATUS_VERIFIED then ETH_STATUS_CREATED (See the ENUM at: https://github.com/enigmampc/enigma-contract/blob/08346f20aad4ff7377a7ff1f737e9a3ab76d0c04/enigma-js/src/emitterConstants.js#L47-L52)
+        This deployment task becomes ETH_STATUS_CREATED then ETH_STATUS_VERIFIED (See the ENUM at: https://github.com/enigmampc/enigma-contract/blob/08346f20aad4ff7377a7ff1f737e9a3ab76d0c04/enigma-js/src/emitterConstants.js#L47-L52)
         Usually a successful  task is ETH_STATUS_CREATED then ETH_STATUS_VERIFIED
         Usually a failed      task is ETH_STATUS_CREATED then ETH_STATUS_FAILED
       */
@@ -64,8 +64,56 @@ describe("deploy errors", () => {
         enigma,
         accounts[0],
         path.resolve(__dirname, "../secretContracts/calculator.wasm"),
-        "not a valid construct()",
+        "non-existing construct()",
         [],
+        4000000
+      );
+    },
+    constants.TIMEOUT_FAILDEPLOY
+  );
+
+  it.skip(
+    "constructor signature is a regular function",
+    async () => {
+      /*
+        TODO fix a bug in core
+        This deployment task becomes ETH_STATUS_CREATED then ETH_STATUS_VERIFIED (See the ENUM at: https://github.com/enigmampc/enigma-contract/blob/08346f20aad4ff7377a7ff1f737e9a3ab76d0c04/enigma-js/src/emitterConstants.js#L47-L52)
+        Usually a successful  task is ETH_STATUS_CREATED then ETH_STATUS_VERIFIED
+        Usually a failed      task is ETH_STATUS_CREATED then ETH_STATUS_FAILED
+      */
+      await testDeployFailureHelper(
+        enigma,
+        accounts[0],
+        path.resolve(__dirname, "../secretContracts/calculator.wasm"),
+        "sub(uint256,uint256)",
+        [
+          [76, "uint256"],
+          [17, "uint256"]
+        ],
+        4000000
+      );
+    },
+    constants.TIMEOUT_FAILDEPLOY
+  );
+
+  it.skip(
+    "constructor signature args are wrong",
+    async () => {
+      /*
+        TODO fix a bug in core
+        This deployment task becomes ETH_STATUS_CREATED then ETH_STATUS_VERIFIED (See the ENUM at: https://github.com/enigmampc/enigma-contract/blob/08346f20aad4ff7377a7ff1f737e9a3ab76d0c04/enigma-js/src/emitterConstants.js#L47-L52)
+        Usually a successful  task is ETH_STATUS_CREATED then ETH_STATUS_VERIFIED
+        Usually a failed      task is ETH_STATUS_CREATED then ETH_STATUS_FAILED
+      */
+      await testDeployFailureHelper(
+        enigma,
+        accounts[0],
+        path.resolve(__dirname, "../secretContracts/erc20.wasm"),
+        "construct()", // should be construct(bytes32,uint256)
+        [
+          [76, "uint256"],
+          [17, "uint256"]
+        ],
         4000000
       );
     },

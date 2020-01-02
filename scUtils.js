@@ -127,6 +127,23 @@ module.exports.testDeployHelper = async function(
   return deployTask;
 };
 
+const ethStatusIdToName = {
+  0: "ETH_STATUS_UNDEFINED",
+  1: "ETH_STATUS_CREATED",
+  2: "ETH_STATUS_VERIFIED",
+  3: "ETH_STATUS_FAILED",
+  4: "ETH_STATUS_FAILED_ETH",
+  5: "ETH_STATUS_FAILED_RETURN"
+};
+const ethStatusNameToId = {
+  ETH_STATUS_UNDEFINED: 0,
+  ETH_STATUS_CREATED: 1,
+  ETH_STATUS_VERIFIED: 2,
+  ETH_STATUS_FAILED: 3,
+  ETH_STATUS_FAILED_ETH: 4,
+  ETH_STATUS_FAILED_RETURN: 5
+};
+
 module.exports.testDeployFailureHelper = async function(
   enigma,
   account,
@@ -139,6 +156,7 @@ module.exports.testDeployFailureHelper = async function(
 
   while (true) {
     const { ethStatus } = await enigma.getTaskRecordStatus(deployTask);
+    // console.log(ethStatusIdToName[ethStatus]);
     if (ethStatus == eeConstants.ETH_STATUS_FAILED) {
       break;
     }
