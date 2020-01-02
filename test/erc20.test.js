@@ -54,7 +54,8 @@ describe("erc20", () => {
         [
           [addr0, "bytes32"],
           [1000000, "uint256"]
-        ]
+        ],
+        "construct(bytes32,uint256)"
       );
       scAddr = deployTask.scAddr;
     },
