@@ -1,10 +1,10 @@
 const path = require("path");
 const Web3 = require("web3");
-const { Enigma, utils, eeConstants } = require("../enigmaLoader");
+const { Enigma } = require("../enigmaLoader");
 const { EnigmaContractAddress, EnigmaTokenContractAddress, proxyAddress, ethNodeAddr } = require("../contractLoader");
 const constants = require("../testConstants");
 
-const { deploy, sleep, testDeployFailureHelper } = require("../scUtils");
+const { testDeployFailureHelper } = require("../scUtils");
 
 describe("deploy errors", () => {
   let accounts;
