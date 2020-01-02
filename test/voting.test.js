@@ -11,7 +11,7 @@ const {
 } = require("../contractLoader");
 const constants = require("../testConstants");
 
-const { testDeployHelper, testComputeHelper, testComputeFailureHelper } = require("../scUtils");
+const { testDeployHelper, testComputeHelper, testComputeFailureHelper, sleep } = require("../scUtils");
 
 describe("voting", () => {
   let accounts;
