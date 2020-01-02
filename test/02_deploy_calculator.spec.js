@@ -92,7 +92,7 @@ describe("Enigma tests", () => {
         }
       );
     },
-    constants.TIMEOUT_DEPLOY * 10
+    constants.TIMEOUT_DEPLOY
   );
 
   it(
