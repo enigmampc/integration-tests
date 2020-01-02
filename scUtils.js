@@ -108,8 +108,6 @@ module.exports.testDeployHelper = async function(
 ) {
   const deployTask = await deploy(enigma, account, wasmPathOrBuffer, scTaskArgs, gasLimit, scTaskFn);
 
-  scAddr = deployTask.scAddr;
-
   while (true) {
     const { ethStatus } = await enigma.getTaskRecordStatus(deployTask);
     if (ethStatus == eeConstants.ETH_STATUS_VERIFIED) {
