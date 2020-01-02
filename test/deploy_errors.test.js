@@ -54,18 +54,19 @@ describe("deploy errors", () => {
   it.skip(
     "bad constructor name",
     async () => {
-      // TODO fix
-      // this passes but very weirdly
-      // why is this VERIFIED then CREATED?!?!
+      /*
+        TODO fix a bug in core
+        This deployment task becomes ETH_STATUS_VERIFIED then ETH_STATUS_CREATED (See the ENUM at: https://github.com/enigmampc/enigma-contract/blob/08346f20aad4ff7377a7ff1f737e9a3ab76d0c04/enigma-js/src/emitterConstants.js#L47-L52)
+        Usually a successful  task is ETH_STATUS_CREATED then ETH_STATUS_VERIFIED
+        Usually a failed      task is ETH_STATUS_CREATED then ETH_STATUS_FAILED
+      */
       await testDeployFailureHelper(
         enigma,
         accounts[0],
         path.resolve(__dirname, "../secretContracts/calculator.wasm"),
         "not a valid construct()",
         [],
-        4000000,
-        eeConstants.ETH_STATUS_VERIFIED,
-        eeConstants.ETH_STATUS_CREATED
+        4000000
       );
     },
     constants.TIMEOUT_FAILDEPLOY
