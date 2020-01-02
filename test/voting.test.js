@@ -1,4 +1,3 @@
-const fs = require("fs");
 const path = require("path");
 const Web3 = require("web3");
 const { Enigma, eeConstants } = require("../enigmaLoader");
@@ -12,7 +11,7 @@ const {
 } = require("../contractLoader");
 const constants = require("../testConstants");
 
-const { deploy, testComputeHelper, sleep, testComputeFailureHelper } = require("../scUtils");
+const { testDeployHelper, testComputeHelper, testComputeFailureHelper } = require("../scUtils");
 
 describe("voting", () => {
   let accounts;
@@ -40,33 +39,16 @@ describe("voting", () => {
   it(
     "deploy",
     async () => {
-      const deployTask = await deploy(
+      const deployTask = await testDeployHelper(
         enigma,
         accounts[0],
         path.resolve(__dirname, "../secretContracts/voting.wasm"),
         [[VotingETHContractAddress, "address"]],
-        4000000,
-        "construct(address)"
+        "construct(address)",
+        4000000
       );
 
       scAddr = deployTask.scAddr;
-      fs.writeFileSync("/tmp/enigma/addr-voting.txt", deployTask.scAddr, "utf8");
-
-      while (true) {
-        const { ethStatus } = await enigma.getTaskRecordStatus(deployTask);
-        if (ethStatus == eeConstants.ETH_STATUS_VERIFIED) {
-          break;
-        }
-
-        expect(ethStatus).toEqual(eeConstants.ETH_STATUS_CREATED);
-        await sleep(1000);
-      }
-
-      const isDeployed = await enigma.admin.isDeployed(deployTask.scAddr);
-      expect(isDeployed).toEqual(true);
-
-      const codeHash = await enigma.admin.getCodeHash(deployTask.scAddr);
-      expect(codeHash).toBeTruthy();
     },
     constants.TIMEOUT_DEPLOY
   );

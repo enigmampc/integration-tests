@@ -4,7 +4,7 @@ const { Enigma, eeConstants } = require("../enigmaLoader");
 const { EnigmaContractAddress, EnigmaTokenContractAddress, proxyAddress, ethNodeAddr } = require("../contractLoader");
 const constants = require("../testConstants");
 
-const { deploy, testComputeHelper, sleep, testComputeFailureHelper } = require("../scUtils");
+const { testComputeHelper, testComputeFailureHelper } = require("../scUtils");
 
 describe("constructor_set_state_12", () => {
   let accounts;
@@ -28,29 +28,12 @@ describe("constructor_set_state_12", () => {
   it(
     "deploy",
     async () => {
-      const deployTask = await deploy(
+      const deployTask = await testDeployHelper(
         enigma,
         accounts[0],
         path.resolve(__dirname, "../secretContracts/constructor_set_state_12.wasm")
       );
-
       scAddr = deployTask.scAddr;
-
-      while (true) {
-        const { ethStatus } = await enigma.getTaskRecordStatus(deployTask);
-        if (ethStatus == eeConstants.ETH_STATUS_VERIFIED) {
-          break;
-        }
-
-        expect(ethStatus).toEqual(eeConstants.ETH_STATUS_CREATED);
-        await sleep(1000);
-      }
-
-      const isDeployed = await enigma.admin.isDeployed(deployTask.scAddr);
-      expect(isDeployed).toEqual(true);
-
-      const codeHash = await enigma.admin.getCodeHash(deployTask.scAddr);
-      expect(codeHash).toBeTruthy();
     },
     constants.TIMEOUT_DEPLOY
   );

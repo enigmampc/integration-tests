@@ -1,13 +1,13 @@
 const path = require("path");
 const Web3 = require("web3");
-const { Enigma, eeConstants, utils } = require("../enigmaLoader");
+const { Enigma, utils } = require("../enigmaLoader");
 const { EnigmaContractAddress, EnigmaTokenContractAddress, proxyAddress, ethNodeAddr } = require("../contractLoader");
 const constants = require("../testConstants");
 const ec = new (require("elliptic").ec)("secp256k1");
 const BN = require("bn.js");
 const EthCrypto = require("eth-crypto");
 
-const { deploy, testComputeHelper, sleep } = require("../scUtils");
+const { testDeployHelper, testComputeHelper } = require("../scUtils");
 
 describe("erc20", () => {
   let accounts;
@@ -47,28 +47,16 @@ describe("erc20", () => {
       expect(keyPair0.getPrivate().toString(16)).toEqual(account_zero_private_key);
       expect(addr0.slice(-40)).toString(utils.remove0x(accounts[0]));
 
-      const deployTask = await deploy(enigma, accounts[0], path.resolve(__dirname, "../secretContracts/erc20.wasm"), [
-        [addr0, "bytes32"],
-        [1000000, "uint256"]
-      ]);
-
+      const deployTask = await testDeployHelper(
+        enigma,
+        accounts[0],
+        path.resolve(__dirname, "../secretContracts/erc20.wasm"),
+        [
+          [addr0, "bytes32"],
+          [1000000, "uint256"]
+        ]
+      );
       scAddr = deployTask.scAddr;
-
-      while (true) {
-        const { ethStatus } = await enigma.getTaskRecordStatus(deployTask);
-        if (ethStatus == eeConstants.ETH_STATUS_VERIFIED) {
-          break;
-        }
-
-        expect(ethStatus).toEqual(eeConstants.ETH_STATUS_CREATED);
-        await sleep(1000);
-      }
-
-      const isDeployed = await enigma.admin.isDeployed(deployTask.scAddr);
-      expect(isDeployed).toEqual(true);
-
-      const codeHash = await enigma.admin.getCodeHash(deployTask.scAddr);
-      expect(codeHash).toBeTruthy();
     },
     constants.TIMEOUT_DEPLOY
   );

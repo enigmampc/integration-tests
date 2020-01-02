@@ -98,6 +98,37 @@ module.exports.testComputeFailureHelper = async function(enigma, account, scAddr
   }
 };
 
+module.exports.testDeployHelper = async function(
+  enigma,
+  account,
+  wasmPathOrBuffer,
+  scTaskArgs = [],
+  scTaskFn = "construct()",
+  gasLimit = 4000000
+) {
+  const deployTask = await deploy(enigma, account, wasmPathOrBuffer, scTaskArgs, gasLimit, scTaskFn);
+
+  scAddr = deployTask.scAddr;
+
+  while (true) {
+    const { ethStatus } = await enigma.getTaskRecordStatus(deployTask);
+    if (ethStatus == eeConstants.ETH_STATUS_VERIFIED) {
+      break;
+    }
+
+    expect(ethStatus).toEqual(eeConstants.ETH_STATUS_CREATED);
+    await sleep(1000);
+  }
+
+  const isDeployed = await enigma.admin.isDeployed(deployTask.scAddr);
+  expect(isDeployed).toEqual(true);
+
+  const codeHash = await enigma.admin.getCodeHash(deployTask.scAddr);
+  expect(codeHash).toBeTruthy();
+
+  return deployTask;
+};
+
 module.exports.testDeployFailureHelper = async function(
   enigma,
   account,
