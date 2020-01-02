@@ -42,6 +42,16 @@ jobs:
           docker-compose up &
           until ./is_ready.sh; do
             docker-compose ps
+            echo "Still not ready"
+            echo "Workers: $(docker-compose ps |
+              grep -P 'worker|bootstrap' |
+              wc -l)"
+            echo "Registered Workers: $(docker-compose logs --tail 1000 km |
+              grep -F 'get_active_workers() =>' |
+              tail -1 |
+              grep -Poi '0x[a-f0-9]+' |
+              sort -u |
+              wc -l)"
             sleep 10
           done
       - name: Test
