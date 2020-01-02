@@ -4,7 +4,7 @@ const { Enigma, eeConstants } = require("../enigmaLoader");
 const { EnigmaContractAddress, EnigmaTokenContractAddress, proxyAddress, ethNodeAddr } = require("../contractLoader");
 const constants = require("../testConstants");
 
-const { testComputeHelper, testComputeFailureHelper } = require("../scUtils");
+const { testDeployHelper, testComputeHelper, testComputeFailureHelper } = require("../scUtils");
 
 describe("constructor_set_state_12", () => {
   let accounts;
