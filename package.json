@@ -18,12 +18,9 @@
   "homepage": "https://enigma.co",
   "devDependencies": {},
   "jest": {
-    "clearMocks": true,
-    "testEnvironment": "jsdom",
     "transform": {
       ".js$": "babel-jest"
     },
-    "rootDir": ".",
     "transformIgnorePatterns": [
       "<rootDir>/node_modules/"
     ],
