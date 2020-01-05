@@ -23,4 +23,8 @@ describe("execute errors", () => {
     enigma.setTaskKeyPair("cupcake");
     expect(Enigma.version()).toEqual("0.0.1");
   });
+
+  it("init", async () => {
+    expect(true).toEqual(true);
+  });
 });
