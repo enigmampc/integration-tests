@@ -16,4 +16,5 @@ if [ ! -f .env ]; then
     echo "ENIGMA_ENV=COMPOSE" >> .env
 fi
 
+rm -rf enigma-js
 wget -P enigma-js/lib https://raw.githubusercontent.com/enigmampc/enigma-contract/develop/enigma-js/lib/enigma-js.node.js
