@@ -66,7 +66,8 @@ describe("constructor_set_state_12", () => {
           // Using EnigmaContractAddress as long as it never has a function called 'record()'
           [EnigmaContractAddress, "address"]
         ],
-        eeConstants.ETH_STATUS_FAILED_ETH
+        eeConstants.ETH_STATUS_FAILED_ETH,
+        msg => expect(msg).toEqual("")
       );
 
       await testComputeHelper(enigma, accounts[0], scAddr, "get_last_sum()", [], decryptedOutput =>

@@ -105,7 +105,8 @@ describe("voting", () => {
           [addr1, "bytes32"],
           [0, "uint256"]
         ],
-        eeConstants.ETH_STATUS_FAILED
+        eeConstants.ETH_STATUS_FAILED,
+        msg => expect(msg).toEqual("Error in execution of WASM code: unreachable")
       );
     },
     constants.TIMEOUT_COMPUTE
@@ -149,7 +150,9 @@ describe("voting", () => {
             scAddr,
             "tally_poll(uint256)",
             [[pollId, "uint256"]],
-            eeConstants.ETH_STATUS_FAILED_ETH
+            eeConstants.ETH_STATUS_FAILED_ETH,
+            undefined,
+            msg => expect(msg).toEqual("bla bla")
           );
           But this could take time and mess up the timing of this whole test
           (If expirationTime didn't pass before the call but will pass before a worker

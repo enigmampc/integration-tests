@@ -49,7 +49,8 @@ describe("execute errors", () => {
           [voter, "bytes32"],
           [vote, "uint256"]
         ],
-        eeConstants.ETH_STATUS_FAILED_ETH
+        eeConstants.ETH_STATUS_FAILED_ETH,
+        msg => expect(msg).toEqual("")
       );
     },
     constants.TIMEOUT_DEPLOY + constants.TIMEOUT_COMPUTE
@@ -74,7 +75,8 @@ describe("execute errors", () => {
           [76, "uint256"],
           [17, "uint256"]
         ],
-        eeConstants.ETH_STATUS_FAILED
+        eeConstants.ETH_STATUS_FAILED,
+        msg => expect(msg).toEqual("Error in execution of WASM code: unreachable")
       );
     },
     constants.TIMEOUT_DEPLOY + constants.TIMEOUT_COMPUTE
@@ -100,6 +102,7 @@ describe("execute errors", () => {
           [17, "uint256"]
         ],
         eeConstants.ETH_STATUS_FAILED,
+        msg => expect(msg).toEqual("Invocation resulted in gas limit violated"),
         tooLittleGas
       );
     },
@@ -117,7 +120,7 @@ describe("execute errors", () => {
         "function()",
         [],
         eeConstants.ETH_STATUS_FAILED,
-        1
+        msg => expect(msg).toEqual("Error in execution of WASM code: unreachable")
       );
     },
     constants.TIMEOUT_COMPUTE
@@ -138,7 +141,8 @@ describe("execute errors", () => {
         deployTask.scAddr,
         "sub(uint256,uint256)",
         [[76, "uint256"]],
-        eeConstants.ETH_STATUS_FAILED
+        eeConstants.ETH_STATUS_FAILED,
+        msg => expect(msg).toEqual("Error in execution of WASM code: unreachable")
       );
     },
     constants.TIMEOUT_DEPLOY + constants.TIMEOUT_COMPUTE
@@ -162,7 +166,8 @@ describe("execute errors", () => {
           [76, "uint256"],
           [17, "uint256"]
         ],
-        eeConstants.ETH_STATUS_FAILED
+        eeConstants.ETH_STATUS_FAILED,
+        msg => expect(msg).toEqual("Error in execution of WASM code: unreachable")
       );
     },
     constants.TIMEOUT_DEPLOY + constants.TIMEOUT_COMPUTE

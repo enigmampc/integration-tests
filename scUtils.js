@@ -83,11 +83,31 @@ module.exports.testComputeFailureHelper = async function(
   taskFn,
   taskArgs,
   expectedEthStatus,
+  decryptedOutputTester,
   taskGasLimit = 20000000
 ) {
   const computeTask = await compute(enigma, account, scAddr, taskFn, taskArgs, taskGasLimit);
 
   await testTaskFinalStatus(enigma, computeTask, expectedEthStatus);
+
+  const computeTaskResult = await new Promise((resolve, reject) => {
+    enigma
+      .getTaskResult(computeTask)
+      .on(eeConstants.GET_TASK_RESULT_RESULT, resolve)
+      .on(eeConstants.ERROR, reject);
+  });
+  if (expectedEthStatus === eeConstants.ETH_STATUS_FAILED_ETH) {
+    expect(computeTaskResult.engStatus).toEqual("SUCCESS");
+  } else {
+    expect(computeTaskResult.engStatus).toEqual("FAILED");
+  }
+  expect(computeTaskResult.encryptedAbiEncodedOutputs).toBeTruthy();
+
+  const decryptedTaskResult = await enigma.decryptTaskResult(computeTaskResult);
+  expect(decryptedTaskResult.usedGas).toBeTruthy();
+  expect(decryptedTaskResult.workerTaskSig).toBeTruthy();
+
+  await decryptedOutputTester(new Buffer(decryptedTaskResult.decryptedOutput, "hex").toString());
 };
 
 module.exports.testDeployHelper = async function(
