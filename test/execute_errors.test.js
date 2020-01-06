@@ -106,7 +106,7 @@ describe("execute errors", () => {
     constants.TIMEOUT_DEPLOY + constants.TIMEOUT_COMPUTE
   );
 
-  it.only(
+  it.skip(
     "execute function on a non-existing secret contract",
     async () => {
       const badScAddr = "0xffeeaabbccffeeaabbccffeeaabbccffeeaabbccffeeaabbccffeeaabbccffee";
