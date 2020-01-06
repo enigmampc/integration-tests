@@ -60,7 +60,7 @@ module.exports.testComputeHelper = async function(
 
   while (true) {
     const { ethStatus } = await enigma.getTaskRecordStatus(computeTask);
-    if (ethStatus == eeConstants.ETH_STATUS_VERIFIED) {
+    if (ethStatus === eeConstants.ETH_STATUS_VERIFIED) {
       break;
     }
 
@@ -89,7 +89,7 @@ module.exports.testComputeFailureHelper = async function(enigma, account, scAddr
 
   while (true) {
     const { ethStatus } = await enigma.getTaskRecordStatus(computeTask);
-    if (ethStatus == expectedEthStatus) {
+    if (ethStatus === expectedEthStatus) {
       break;
     }
 
@@ -110,7 +110,7 @@ module.exports.testDeployHelper = async function(
 
   while (true) {
     const { ethStatus } = await enigma.getTaskRecordStatus(deployTask);
-    if (ethStatus == eeConstants.ETH_STATUS_VERIFIED) {
+    if (ethStatus === eeConstants.ETH_STATUS_VERIFIED) {
       break;
     }
 
@@ -127,7 +127,7 @@ module.exports.testDeployHelper = async function(
   return deployTask;
 };
 
-const ethStatusIdToName = {
+const ethStatusCodeToName = {
   0: "ETH_STATUS_UNDEFINED",
   1: "ETH_STATUS_CREATED",
   2: "ETH_STATUS_VERIFIED",
@@ -135,7 +135,7 @@ const ethStatusIdToName = {
   4: "ETH_STATUS_FAILED_ETH",
   5: "ETH_STATUS_FAILED_RETURN"
 };
-const ethStatusNameToId = {
+const ethStatusNameToCode = {
   ETH_STATUS_UNDEFINED: 0,
   ETH_STATUS_CREATED: 1,
   ETH_STATUS_VERIFIED: 2,
@@ -157,7 +157,7 @@ module.exports.testDeployFailureHelper = async function(
   while (true) {
     const { ethStatus } = await enigma.getTaskRecordStatus(deployTask);
     // console.log(ethStatusIdToName[ethStatus]);
-    if (ethStatus == eeConstants.ETH_STATUS_FAILED) {
+    if (ethStatus === eeConstants.ETH_STATUS_FAILED) {
       break;
     }
 
