@@ -52,6 +52,31 @@ describe("execute errors", () => {
         eeConstants.ETH_STATUS_FAILED_ETH
       );
     },
-    constants.TIMEOUT_DEPLOY
+    constants.TIMEOUT_DEPLOY + constants.TIMEOUT_COMPUTE
+  );
+
+  it(
+    "function signature isn't exists",
+    async () => {
+      const deployTask = await testDeployHelper(
+        enigma,
+        accounts[0],
+        path.resolve(__dirname, "../secretContracts/calculator.wasm")
+      );
+
+      // there is no function signature not_sub(uint256,uint256), should be sub(uint256,uint256)
+      await testComputeFailureHelper(
+        enigma,
+        accounts[0],
+        deployTask.scAddr,
+        "not_sub(uint256,uint256)",
+        [
+          [76, "uint256"],
+          [17, "uint256"]
+        ],
+        eeConstants.ETH_STATUS_FAILED
+      );
+    },
+    constants.TIMEOUT_DEPLOY + constants.TIMEOUT_COMPUTE
   );
 });
