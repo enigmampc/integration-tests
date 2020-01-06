@@ -24,7 +24,34 @@ describe("execute errors", () => {
     expect(Enigma.version()).toEqual("0.0.1");
   });
 
-  it("init", async () => {
-    expect(true).toEqual(true);
-  });
+  it(
+    "error in ethereum callback",
+    async () => {
+      const deployTask = await testDeployHelper(
+        enigma,
+        accounts[0],
+        path.resolve(__dirname, "../secretContracts/voting.wasm"),
+        [["0x0000000000000000000000000000000000000102", "address"]],
+        "construct(address)",
+        4000000
+      );
+
+      const voter = "0x0000000000000000000000000000000000000000000000000000000000000001";
+      const vote = 0;
+      const pollId = 0;
+      await testComputeFailureHelper(
+        enigma,
+        accounts[0],
+        deployTask.scAddr,
+        "cast_vote(uint256,bytes32,uint256)",
+        [
+          [pollId, "uint256"],
+          [voter, "bytes32"],
+          [vote, "uint256"]
+        ],
+        eeConstants.ETH_STATUS_FAILED
+      );
+    },
+    constants.TIMEOUT_DEPLOY
+  );
 });
