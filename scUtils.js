@@ -107,7 +107,7 @@ module.exports.testComputeFailureHelper = async function(
   expect(decryptedTaskResult.usedGas).toBeTruthy();
   expect(decryptedTaskResult.workerTaskSig).toBeTruthy();
 
-  await decryptedOutputTester(new Buffer(decryptedTaskResult.decryptedOutput, "hex").toString());
+  await decryptedOutputTester(Buffer.from(decryptedTaskResult.decryptedOutput, "hex").toString());
 };
 
 module.exports.testDeployHelper = async function(
