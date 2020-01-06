@@ -25,6 +25,8 @@ This setup is only relevant for developers interested in manually debugging some
     ./local_init.bash
     ```
 
+    Note: in the `wget` line inside `local_init.bash` you can point it to the right `enigma-contract` branch if it's not `develop`.
+
 4.  Then you can run the integration tests:
 
     ```
@@ -34,12 +36,12 @@ This setup is only relevant for developers interested in manually debugging some
     or any one individual test:
 
     ```
-    yarn test test/02_deploy_calculator.spec.js
+    yarn test calculator
     ```
 
     Please note that if you want to manually run them from inside the `test/` folder directly, you will have to copy the `.env` file there, or export these variable to the environment, for example:
 
     ```
     cd test
-    SGX_MODE=SW ENIGMA_ENV=COMPOSE yarn test 02_deploy_calculator.spec.js
+    SGX_MODE=SW ENIGMA_ENV=COMPOSE yarn test calculator
     ```
