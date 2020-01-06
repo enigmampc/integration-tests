@@ -58,15 +58,7 @@ module.exports.testComputeHelper = async function(
 ) {
   const computeTask = await compute(enigma, account, scAddr, taskFn, taskArgs, taskGasLimit);
 
-  while (true) {
-    const { ethStatus } = await enigma.getTaskRecordStatus(computeTask);
-    if (ethStatus === eeConstants.ETH_STATUS_VERIFIED) {
-      break;
-    }
-
-    expect(ethStatus).toEqual(eeConstants.ETH_STATUS_CREATED);
-    await sleep(1000);
-  }
+  await testTaskFinalStatus(enigma, computeTask, eeConstants.ETH_STATUS_VERIFIED);
 
   const computeTaskResult = await new Promise((resolve, reject) => {
     enigma
@@ -87,15 +79,7 @@ module.exports.testComputeHelper = async function(
 module.exports.testComputeFailureHelper = async function(enigma, account, scAddr, taskFn, taskArgs, expectedEthStatus) {
   const computeTask = await compute(enigma, account, scAddr, taskFn, taskArgs);
 
-  while (true) {
-    const { ethStatus } = await enigma.getTaskRecordStatus(computeTask);
-    if (ethStatus === expectedEthStatus) {
-      break;
-    }
-
-    expect(ethStatus).toEqual(eeConstants.ETH_STATUS_CREATED);
-    await sleep(1000);
-  }
+  await testTaskFinalStatus(enigma, computeTask, expectedEthStatus);
 };
 
 module.exports.testDeployHelper = async function(
@@ -108,15 +92,7 @@ module.exports.testDeployHelper = async function(
 ) {
   const deployTask = await deploy(enigma, account, wasmPathOrBuffer, scTaskArgs, gasLimit, scTaskFn);
 
-  while (true) {
-    const { ethStatus } = await enigma.getTaskRecordStatus(deployTask);
-    if (ethStatus === eeConstants.ETH_STATUS_VERIFIED) {
-      break;
-    }
-
-    expect(ethStatus).toEqual(eeConstants.ETH_STATUS_CREATED);
-    await sleep(1000);
-  }
+  await testTaskFinalStatus(enigma, deployTask, eeConstants.ETH_STATUS_VERIFIED);
 
   const isDeployed = await enigma.admin.isDeployed(deployTask.scAddr);
   expect(isDeployed).toEqual(true);
@@ -154,16 +130,7 @@ module.exports.testDeployFailureHelper = async function(
 ) {
   const deployTask = await deploy(enigma, account, wasmPathOrBuffer, scTaskArgs, gasLimit, scTaskFn);
 
-  while (true) {
-    const { ethStatus } = await enigma.getTaskRecordStatus(deployTask);
-    // console.log(ethStatusIdToName[ethStatus]);
-    if (ethStatus === eeConstants.ETH_STATUS_FAILED) {
-      break;
-    }
-
-    expect(ethStatus).toEqual(eeConstants.ETH_STATUS_CREATED);
-    await sleep(1000);
-  }
+  await testTaskFinalStatus(enigma, deployTask, eeConstants.ETH_STATUS_FAILED);
 
   const isDeployed = await enigma.admin.isDeployed(deployTask.scAddr);
   expect(isDeployed).toEqual(false);
@@ -171,3 +138,18 @@ module.exports.testDeployFailureHelper = async function(
   const codeHash = await enigma.admin.getCodeHash(deployTask.scAddr);
   expect(codeHash).toEqual("0x0000000000000000000000000000000000000000000000000000000000000000");
 };
+
+async function testTaskFinalStatus(enigma, task, finalStatus) {
+  let { ethStatus } = await enigma.getTaskRecordStatus(task);
+  expect(ethStatusCodeToName[ethStatus]).toEqual(ethStatusCodeToName[eeConstants.ETH_STATUS_CREATED]);
+
+  while (true) {
+    ({ ethStatus } = await enigma.getTaskRecordStatus(task));
+    if (ethStatus !== eeConstants.ETH_STATUS_CREATED) {
+      break;
+    }
+    await sleep(1000);
+  }
+
+  expect(ethStatusCodeToName[ethStatus]).toEqual(ethStatusCodeToName[finalStatus]);
+}
