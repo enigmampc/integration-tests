@@ -24,7 +24,7 @@ describe("execute errors", () => {
     expect(Enigma.version()).toEqual("0.0.1");
   });
 
-  it(
+  it.skip(
     "error in ethereum callback",
     async () => {
       const deployTask = await testDeployHelper(
