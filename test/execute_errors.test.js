@@ -49,7 +49,7 @@ describe("execute errors", () => {
           [voter, "bytes32"],
           [vote, "uint256"]
         ],
-        eeConstants.ETH_STATUS_FAILED
+        eeConstants.ETH_STATUS_FAILED_ETH
       );
     },
     constants.TIMEOUT_DEPLOY
