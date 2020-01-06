@@ -35,7 +35,7 @@ function deploy(
 }
 module.exports.deploy = deploy;
 
-function compute(enigma, account, scAddr, taskFn, taskArgs, taskGasLimit = 1000000) {
+function compute(enigma, account, scAddr, taskFn, taskArgs, taskGasLimit = 20000000) {
   const taskGasPx = utils.toGrains(1);
 
   return new Promise((resolve, reject) => {
@@ -76,8 +76,16 @@ module.exports.testComputeHelper = async function(
   await decryptedOutputTester(decryptedTaskResult.decryptedOutput);
 };
 
-module.exports.testComputeFailureHelper = async function(enigma, account, scAddr, taskFn, taskArgs, expectedEthStatus) {
-  const computeTask = await compute(enigma, account, scAddr, taskFn, taskArgs);
+module.exports.testComputeFailureHelper = async function(
+  enigma,
+  account,
+  scAddr,
+  taskFn,
+  taskArgs,
+  expectedEthStatus,
+  taskGasLimit = 20000000
+) {
+  const computeTask = await compute(enigma, account, scAddr, taskFn, taskArgs, taskGasLimit);
 
   await testTaskFinalStatus(enigma, computeTask, expectedEthStatus);
 };

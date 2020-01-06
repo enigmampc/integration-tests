@@ -79,4 +79,29 @@ describe("execute errors", () => {
     },
     constants.TIMEOUT_DEPLOY + constants.TIMEOUT_COMPUTE
   );
+
+  it(
+    "out of gas",
+    async () => {
+      const deployTask = await testDeployHelper(
+        enigma,
+        accounts[0],
+        path.resolve(__dirname, "../secretContracts/calculator.wasm")
+      );
+
+      await testComputeFailureHelper(
+        enigma,
+        accounts[0],
+        deployTask.scAddr,
+        "sub(uint256,uint256)",
+        [
+          [76, "uint256"],
+          [17, "uint256"]
+        ],
+        eeConstants.ETH_STATUS_FAILED,
+        1
+      );
+    },
+    constants.TIMEOUT_DEPLOY + constants.TIMEOUT_COMPUTE
+  );
 });
