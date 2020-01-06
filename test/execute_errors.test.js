@@ -122,4 +122,25 @@ describe("execute errors", () => {
     },
     constants.TIMEOUT_DEPLOY + constants.TIMEOUT_COMPUTE
   );
+
+  it(
+    "wrong number of input params",
+    async () => {
+      const deployTask = await testDeployHelper(
+        enigma,
+        accounts[0],
+        path.resolve(__dirname, "../secretContracts/calculator.wasm")
+      );
+
+      await testComputeFailureHelper(
+        enigma,
+        accounts[0],
+        deployTask.scAddr,
+        "sub(uint256,uint256)",
+        [[76, "uint256"]],
+        eeConstants.ETH_STATUS_FAILED
+      );
+    },
+    constants.TIMEOUT_DEPLOY + constants.TIMEOUT_COMPUTE
+  );
 });
