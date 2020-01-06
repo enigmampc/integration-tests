@@ -120,7 +120,7 @@ describe("execute errors", () => {
         1
       );
     },
-    constants.TIMEOUT_DEPLOY + constants.TIMEOUT_COMPUTE
+    constants.TIMEOUT_COMPUTE
   );
 
   it(
@@ -138,6 +138,30 @@ describe("execute errors", () => {
         deployTask.scAddr,
         "sub(uint256,uint256)",
         [[76, "uint256"]],
+        eeConstants.ETH_STATUS_FAILED
+      );
+    },
+    constants.TIMEOUT_DEPLOY + constants.TIMEOUT_COMPUTE
+  );
+
+  it.skip(
+    "wrong function signature",
+    async () => {
+      const deployTask = await testDeployHelper(
+        enigma,
+        accounts[0],
+        path.resolve(__dirname, "../secretContracts/calculator.wasm")
+      );
+
+      await testComputeFailureHelper(
+        enigma,
+        accounts[0],
+        deployTask.scAddr,
+        "sub()",
+        [
+          [76, "uint256"],
+          [17, "uint256"]
+        ],
         eeConstants.ETH_STATUS_FAILED
       );
     },
