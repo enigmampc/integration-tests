@@ -89,6 +89,7 @@ describe("execute errors", () => {
         path.resolve(__dirname, "../secretContracts/calculator.wasm")
       );
 
+      const tooLittleGas = 1;
       await testComputeFailureHelper(
         enigma,
         accounts[0],
@@ -98,6 +99,23 @@ describe("execute errors", () => {
           [76, "uint256"],
           [17, "uint256"]
         ],
+        eeConstants.ETH_STATUS_FAILED,
+        tooLittleGas
+      );
+    },
+    constants.TIMEOUT_DEPLOY + constants.TIMEOUT_COMPUTE
+  );
+
+  it.only(
+    "execute function on a non-existing secret contract",
+    async () => {
+      const badScAddr = "0xffeeaabbccffeeaabbccffeeaabbccffeeaabbccffeeaabbccffeeaabbccffee";
+      await testComputeFailureHelper(
+        enigma,
+        accounts[0],
+        badScAddr,
+        "function()",
+        [],
         eeConstants.ETH_STATUS_FAILED,
         1
       );
