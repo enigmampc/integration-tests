@@ -106,7 +106,8 @@ describe("voting", () => {
           [0, "uint256"]
         ],
         eeConstants.ETH_STATUS_FAILED,
-        msg => expect(msg).toEqual("Error in execution of WASM code: unreachable")
+        decryptedOutput =>
+          expect(Buffer.from(decryptedOutput, "hex").toString()).toEqual("Error in execution of WASM code: unreachable")
       );
     },
     constants.TIMEOUT_COMPUTE
@@ -152,7 +153,7 @@ describe("voting", () => {
             [[pollId, "uint256"]],
             eeConstants.ETH_STATUS_FAILED_ETH,
             undefined,
-            msg => expect(msg).toEqual("bla bla")
+            decryptedOutput => expect(Buffer.from(decryptedOutput, "hex").toString()).toEqual("bla bla")
           );
           But this could take time and mess up the timing of this whole test
           (If expirationTime didn't pass before the call but will pass before a worker

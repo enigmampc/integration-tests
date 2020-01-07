@@ -67,8 +67,11 @@ describe("constructor_set_state_12", () => {
           [EnigmaContractAddress, "address"]
         ],
         eeConstants.ETH_STATUS_FAILED_ETH,
-        msg => expect(msg).toEqual("")
+        decryptedOutput => expect(parseInt(decryptedOutput, 16)).toEqual(5)
       );
+
+      // We changed sum to 5 but then got an error on the ethereum callback
+      // So the state will be reverted back to sum=12
 
       await testComputeHelper(enigma, accounts[0], scAddr, "get_last_sum()", [], decryptedOutput =>
         expect(parseInt(decryptedOutput, 16)).toEqual(12)

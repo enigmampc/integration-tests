@@ -50,7 +50,7 @@ describe("execute errors", () => {
           [vote, "uint256"]
         ],
         eeConstants.ETH_STATUS_FAILED_ETH,
-        msg => expect(msg).toEqual("")
+        decryptedOutput => expect(Buffer.from(decryptedOutput, "hex").toString()).toEqual("")
       );
     },
     constants.TIMEOUT_DEPLOY + constants.TIMEOUT_COMPUTE
@@ -76,7 +76,8 @@ describe("execute errors", () => {
           [17, "uint256"]
         ],
         eeConstants.ETH_STATUS_FAILED,
-        msg => expect(msg).toEqual("Error in execution of WASM code: unreachable")
+        decryptedOutput =>
+          expect(Buffer.from(decryptedOutput, "hex").toString()).toEqual("Error in execution of WASM code: unreachable")
       );
     },
     constants.TIMEOUT_DEPLOY + constants.TIMEOUT_COMPUTE
@@ -102,7 +103,8 @@ describe("execute errors", () => {
           [17, "uint256"]
         ],
         eeConstants.ETH_STATUS_FAILED,
-        msg => expect(msg).toEqual("Invocation resulted in gas limit violated"),
+        decryptedOutput =>
+          expect(Buffer.from(decryptedOutput, "hex").toString()).toEqual("Invocation resulted in gas limit violated"),
         tooLittleGas
       );
     },
@@ -120,7 +122,8 @@ describe("execute errors", () => {
         "function()",
         [],
         eeConstants.ETH_STATUS_FAILED,
-        msg => expect(msg).toEqual("Error in execution of WASM code: unreachable")
+        decryptedOutput =>
+          expect(Buffer.from(decryptedOutput, "hex").toString()).toEqual("Error in execution of WASM code: unreachable")
       );
     },
     constants.TIMEOUT_COMPUTE
@@ -142,7 +145,8 @@ describe("execute errors", () => {
         "sub(uint256,uint256)",
         [[76, "uint256"]],
         eeConstants.ETH_STATUS_FAILED,
-        msg => expect(msg).toEqual("Error in execution of WASM code: unreachable")
+        decryptedOutput =>
+          expect(Buffer.from(decryptedOutput, "hex").toString()).toEqual("Error in execution of WASM code: unreachable")
       );
     },
     constants.TIMEOUT_DEPLOY + constants.TIMEOUT_COMPUTE
@@ -167,7 +171,8 @@ describe("execute errors", () => {
           [17, "uint256"]
         ],
         eeConstants.ETH_STATUS_FAILED,
-        msg => expect(msg).toEqual("Error in execution of WASM code: unreachable")
+        decryptedOutput =>
+          expect(Buffer.from(decryptedOutput, "hex").toString()).toEqual("Error in execution of WASM code: unreachable")
       );
     },
     constants.TIMEOUT_DEPLOY + constants.TIMEOUT_COMPUTE
