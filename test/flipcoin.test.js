@@ -10,7 +10,6 @@ describe("flipcoin", () => {
   let accounts;
   let web3;
   let enigma;
-  let scAddr;
 
   beforeAll(async () => {
     web3 = new Web3(new Web3.providers.HttpProvider(ethNodeAddr));
@@ -25,19 +24,16 @@ describe("flipcoin", () => {
     expect(Enigma.version()).toEqual("0.0.1");
   });
 
-  it(
-    "deploy",
-    async () => {
-      const deployTask = await testDeployHelper(
-        enigma,
-        accounts[0],
-        path.resolve(__dirname, "../secretContracts/flipcoin.wasm")
-      );
+  let scAddr;
+  beforeEach(async () => {
+    const deployTask = await testDeployHelper(
+      enigma,
+      accounts[0],
+      path.resolve(__dirname, "../secretContracts/flipcoin.wasm")
+    );
 
-      scAddr = deployTask.scAddr;
-    },
-    constants.TIMEOUT_DEPLOY
-  );
+    scAddr = deployTask.scAddr;
+  }, constants.TIMEOUT_DEPLOY);
 
   it(
     "computeTask flip",
