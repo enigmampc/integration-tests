@@ -3,9 +3,11 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 import Web3 from 'web3';
-import {Enigma, utils, eeConstants} from './enigmaLoader';
-import {EnigmaContract, EnigmaTokenContract, EnigmaContractAddress, EnigmaTokenContractAddress,
-  proxyAddress, ethNodeAddr} from './contractLoader';
+import { Enigma, utils, eeConstants } from './enigmaLoader';
+import {
+  EnigmaContract, EnigmaTokenContract, EnigmaContractAddress, EnigmaTokenContractAddress,
+  proxyAddress, ethNodeAddr
+} from './contractLoader';
 import * as constants from './testConstants';
 
 
@@ -43,13 +45,13 @@ describe('Enigma tests', () => {
   let scTask2;
   it('should deploy secret contract', async () => {
     let scTaskFn = 'construct()';
-    let scTaskArgs =  '';   // Wrong parameters, expecting ETH address
+    let scTaskArgs = '';   // Wrong parameters, expecting ETH address
     let scTaskGasLimit = 1000000;
     let scTaskGasPx = utils.toGrains(1);
     let preCode;
     try {
-      preCode = fs.readFileSync(path.resolve(__dirname,'secretContracts/voting.wasm'));
-    } catch(e) {
+      preCode = fs.readFileSync(path.resolve(__dirname, 'secretContracts/voting.wasm'));
+    } catch (e) {
       console.log('Error:', e.stack);
     }
     scTask2 = await new Promise((resolve, reject) => {
@@ -64,19 +66,19 @@ describe('Enigma tests', () => {
     do {
       await sleep(1000);
       scTask2 = await enigma.getTaskRecordStatus(scTask2);
-      process.stdout.write('Waiting. Current Task Status is '+scTask2.ethStatus+'\r');
+      process.stdout.write('Waiting. Current Task Status is ' + scTask2.ethStatus + '\r');
     } while (scTask2.ethStatus != 3);
     expect(scTask2.ethStatus).toEqual(3);
-    process.stdout.write('Completed. Final Task Status is '+scTask2.ethStatus+'\n');
+    process.stdout.write('Completed. Final Task Status is ' + scTask2.ethStatus + '\n');
   }, constants.TIMEOUT_DEPLOY);
 
   it('should fail to verify deployed contract', async () => {
-    const result = await enigma.admin.isDeployed(scTask2.scAddr);
+    const result = await enigma.admin.isDeployed(scTask2.taskId);
     expect(result).toEqual(false);
   });
 
   it('should fail to get deployed contract bytecode hash', async () => {
-    const result = await enigma.admin.getCodeHash(scTask2.scAddr);
+    const result = await enigma.admin.getCodeHash(scTask2.taskId);
     expect(result).toBeFalsy;
   });
 
