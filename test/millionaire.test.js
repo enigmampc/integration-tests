@@ -10,7 +10,6 @@ describe("millionaire", () => {
   let accounts;
   let web3;
   let enigma;
-  let scAddr;
 
   beforeAll(async () => {
     web3 = new Web3(new Web3.providers.HttpProvider(ethNodeAddr));
@@ -25,24 +24,21 @@ describe("millionaire", () => {
     expect(Enigma.version()).toEqual("0.0.1");
   });
 
-  it(
-    "deploy",
-    async () => {
-      const deployTask = await testDeployHelper(
-        enigma,
-        accounts[0],
-        path.resolve(__dirname, "../secretContracts/millionaire.wasm")
-      );
-      scAddr = deployTask.scAddr;
-    },
-    constants.TIMEOUT_DEPLOY
-  );
+  let scAddr;
+  beforeEach(async () => {
+    const deployTask = await testDeployHelper(
+      enigma,
+      accounts[0],
+      path.resolve(__dirname, "../secretContracts/millionaire.wasm")
+    );
+    scAddr = deployTask.scAddr;
+  }, constants.TIMEOUT_DEPLOY);
 
   const millionaire1 = "0x0000000000000000000000000000000000000000000000000000000000000001";
   const millionaire2 = "0x0000000000000000000000000000000000000000000000000000000000000002";
 
   it(
-    "computeTask add_millionaire",
+    "computeTask add_millionaire + compute_richest",
     async () => {
       await testComputeHelper(
         enigma,
@@ -65,16 +61,6 @@ describe("millionaire", () => {
           [2000000, "uint256"]
         ],
         decryptedOutput => expect(decryptedOutput).toEqual("") /* void */
-      );
-    },
-    constants.TIMEOUT_COMPUTE
-  );
-
-  it(
-    "computeTask compute_richest",
-    async () => {
-      await testComputeHelper(enigma, accounts[0], scAddr, "compute_richest()", [], decryptedOutput =>
-        expect(decryptedOutput).toEqual(utils.remove0x(millionaire2))
       );
     },
     constants.TIMEOUT_COMPUTE
