@@ -59,7 +59,7 @@ describe("erc20", () => {
   }, constants.TIMEOUT_DEPLOY);
 
   it(
-    "computeTask mint",
+    "mint",
     async () => {
       const amount = 100000;
       const account_zero_private_key = "4f3edf983ac636a65a842ce7c78d9aa706d3b113bce9c46f30d7d21715b23b1d";

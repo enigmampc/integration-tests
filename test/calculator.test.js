@@ -35,7 +35,7 @@ describe("calculator", () => {
   }, constants.TIMEOUT_DEPLOY);
 
   it(
-    "computeTask sub",
+    "sub",
     async () => {
       await testComputeHelper(
         enigma,
@@ -53,7 +53,7 @@ describe("calculator", () => {
   );
 
   it(
-    "computeTask mul",
+    "mul",
     async () => {
       await testComputeHelper(
         enigma,
@@ -71,7 +71,7 @@ describe("calculator", () => {
   );
 
   it(
-    "computeTask add",
+    "add",
     async () => {
       await testComputeHelper(
         enigma,

@@ -36,7 +36,7 @@ describe("flipcoin", () => {
   }, constants.TIMEOUT_DEPLOY);
 
   it(
-    "computeTask flip",
+    "flip",
     async () => {
       await testComputeHelper(enigma, accounts[0], scAddr, "flip()", [], decryptedOutput => {
         const result = parseInt(decryptedOutput, 16);

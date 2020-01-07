@@ -35,7 +35,7 @@ describe("constructor_set_state_12", () => {
   }, constants.TIMEOUT_DEPLOY);
 
   it(
-    "computeTask get_last_sum should return sum=12 after it was set in the conctructor",
+    "get_last_sum should return sum=12 after it was set in the conctructor",
     async () => {
       // sum is set to 12 in the constructor:
       // https://github.com/enigmampc/enigma-core/blob/56a4ec7e6c8ad2f0a3149238250fdeed2f1043dd/examples/eng_wasm_contracts/contract_with_eth_calls/src/lib.rs#L61-L62
@@ -47,7 +47,7 @@ describe("constructor_set_state_12", () => {
   );
 
   it(
-    "computeTask failure sum_and_call",
+    "sum_and_call failure+revert on failed ethereum callback",
     async () => {
       await testComputeFailureHelper(
         enigma,

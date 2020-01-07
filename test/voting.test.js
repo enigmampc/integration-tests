@@ -74,7 +74,7 @@ describe("voting", () => {
   const addr2 = "0x0000000000000000000000000000000000000000000000000000000000000002";
 
   it(
-    "computeTask addr1 cast_vote",
+    "addr1 cast_vote",
     async () => {
       await testComputeHelper(
         enigma,
@@ -93,7 +93,7 @@ describe("voting", () => {
   );
 
   it(
-    "computeTask addr1 cannot cast_vote more than once",
+    "addr1 cannot cast_vote more than once",
     async () => {
       await testComputeFailureHelper(
         enigma,
@@ -114,7 +114,7 @@ describe("voting", () => {
   );
 
   it(
-    "computeTask addr2 cast_vote",
+    "addr2 cast_vote",
     async () => {
       await testComputeHelper(
         enigma,

@@ -38,7 +38,7 @@ describe("millionaire", () => {
   const millionaire2 = "0x0000000000000000000000000000000000000000000000000000000000000002";
 
   it(
-    "computeTask add_millionaire + compute_richest",
+    "add_millionaire + compute_richest",
     async () => {
       await testComputeHelper(
         enigma,
