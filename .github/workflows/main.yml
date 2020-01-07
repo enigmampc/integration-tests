@@ -39,7 +39,7 @@ jobs:
       - name: Start Network & Wait for it to be ready
         working-directory: ./docker-environment
         run: |
-          docker-compose up &
+          docker-compose up --scale worker=3 &
           until ./is_ready.sh; do
             docker-compose ps
             echo "Still not ready"
