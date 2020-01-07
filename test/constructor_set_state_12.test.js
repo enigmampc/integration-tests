@@ -10,7 +10,6 @@ describe("constructor_set_state_12", () => {
   let accounts;
   let web3;
   let enigma;
-  let scAddr;
 
   beforeAll(async () => {
     web3 = new Web3(new Web3.providers.HttpProvider(ethNodeAddr));
@@ -25,18 +24,15 @@ describe("constructor_set_state_12", () => {
     expect(Enigma.version()).toEqual("0.0.1");
   });
 
-  it(
-    "deploy",
-    async () => {
-      const deployTask = await testDeployHelper(
-        enigma,
-        accounts[0],
-        path.resolve(__dirname, "../secretContracts/constructor_set_state_12.wasm")
-      );
-      scAddr = deployTask.scAddr;
-    },
-    constants.TIMEOUT_DEPLOY
-  );
+  let scAddr;
+  beforeEach(async () => {
+    const deployTask = await testDeployHelper(
+      enigma,
+      accounts[0],
+      path.resolve(__dirname, "../secretContracts/constructor_set_state_12.wasm")
+    );
+    scAddr = deployTask.scAddr;
+  }, constants.TIMEOUT_DEPLOY);
 
   it(
     "computeTask get_last_sum should return sum=12 after it was set in the conctructor",
