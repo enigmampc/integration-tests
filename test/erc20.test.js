@@ -28,39 +28,35 @@ describe("erc20", () => {
     expect(Enigma.version()).toEqual("0.0.1");
   });
 
-  it(
-    "deploy",
-    async () => {
-      const account_zero_private_key = "4f3edf983ac636a65a842ce7c78d9aa706d3b113bce9c46f30d7d21715b23b1d";
-      const keyPair0 = ec.keyFromPrivate(account_zero_private_key);
-      const addr0 = web3.utils.keccak256(
-        new Buffer.from(
-          keyPair0
-            .getPublic()
-            .encode("hex")
-            .substring(2),
-          "hex"
-        )
-      );
+  beforeEach(async () => {
+    const account_zero_private_key = "4f3edf983ac636a65a842ce7c78d9aa706d3b113bce9c46f30d7d21715b23b1d";
+    const keyPair0 = ec.keyFromPrivate(account_zero_private_key);
+    const addr0 = web3.utils.keccak256(
+      new Buffer.from(
+        keyPair0
+          .getPublic()
+          .encode("hex")
+          .substring(2),
+        "hex"
+      )
+    );
 
-      // Sanity Checks
-      expect(keyPair0.getPrivate().toString(16)).toEqual(account_zero_private_key);
-      expect(addr0.slice(-40)).toString(utils.remove0x(accounts[0]));
+    // Sanity Checks
+    expect(keyPair0.getPrivate().toString(16)).toEqual(account_zero_private_key);
+    expect(addr0.slice(-40)).toString(utils.remove0x(accounts[0]));
 
-      const deployTask = await testDeployHelper(
-        enigma,
-        accounts[0],
-        path.resolve(__dirname, "../secretContracts/erc20.wasm"),
-        [
-          [addr0, "bytes32"],
-          [1000000, "uint256"]
-        ],
-        "construct(bytes32,uint256)"
-      );
-      scAddr = deployTask.scAddr;
-    },
-    constants.TIMEOUT_DEPLOY
-  );
+    const deployTask = await testDeployHelper(
+      enigma,
+      accounts[0],
+      path.resolve(__dirname, "../secretContracts/erc20.wasm"),
+      [
+        [addr0, "bytes32"],
+        [1000000, "uint256"]
+      ],
+      "construct(bytes32,uint256)"
+    );
+    scAddr = deployTask.scAddr;
+  }, constants.TIMEOUT_DEPLOY);
 
   it(
     "computeTask mint",
