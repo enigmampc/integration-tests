@@ -30,7 +30,7 @@ jobs:
             DOCKER_TAG=develop
             make clone-contract BRANCH=develop
           fi
-          sed -i "s/DOCKER_TAG=latest/DOCKER_TAG=${DOCKER_TAG}/" .env;
+          sed -i "s/DOCKER_TAG=latest/DOCKER_TAG=${DOCKER_TAG}/" .env
           docker pull "enigmampc/worker_sw:${DOCKER_TAG}"
           docker pull "enigmampc/key_management_sw:${DOCKER_TAG}"
           docker pull "enigmampc/contract:${DOCKER_TAG}"
