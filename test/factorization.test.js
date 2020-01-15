@@ -42,10 +42,7 @@ describe("factorization", () => {
         accounts[0],
         scAddr,
         "find_number_of_prime_factors(uint64)",
-        [
-          [76, "uint256"],
-          [17, "uint256"]
-        ],
+        [[8972, "uint64"]],
         decryptedOutput => expect(parseInt(decryptedOutput, 16)).toEqual(2)
       );
     },
