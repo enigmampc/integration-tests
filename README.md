@@ -17,9 +17,30 @@ This setup is only relevant for developers interested in manually debugging some
 
     Note: Inside `integration-tests/integration-tests/` so when `local_init.bash` will create the `../build/` directory it won't pollute the parent directory of `integration-tests/` which is probably `$HOME/projects`.
 
-2.  Clone [docker-environment](https://github.com/enigmampc/docker-environment) elsewhere in your computer, configure it, and start it with `docker-compose up`.
+2.  Clone [docker-environment](https://github.com/enigmampc/docker-environment) elsewhere in your computer:
 
-3.  Once the network is fully up and running, run the following script once:
+    ```bash
+    git clone https://github.com/enigmampc/docker-environment
+    ```
+
+    In `docker-environment/.env` set `DOCKER_TAG=develop`.  
+    In `docker-environment/docker-compose.yml`, under `bootstrap` add:
+
+    ```
+    ports:
+      - 3346:3346
+    ```
+
+    and under `contract` add:
+
+    ```
+    ports:
+      - 9545:9545
+    ```
+
+    You can run the script `./watch_is_ready.sh` to see when the network is ready (at least one worker registered).
+
+3)  Once the network is fully up and running, run the following script once:
 
     ```bash
     ./local_init.bash
@@ -27,7 +48,7 @@ This setup is only relevant for developers interested in manually debugging some
 
     Note: in the `wget` line inside `local_init.bash` you can point it to the right `enigma-contract` branch if it's not `develop`.
 
-4.  Then you can run the integration tests:
+4)  Then you can run the integration tests:
 
     ```
     test/runTests.bash
