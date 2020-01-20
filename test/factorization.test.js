@@ -37,15 +37,40 @@ describe("factorization", () => {
   it(
     "find_number_of_prime_factors",
     async () => {
+      const input = 8972;
+      const expectedOutput = Array.from(new Set(findPrimeFactors(input))).length;
+
       await testComputeHelper(
         enigma,
         accounts[0],
         scAddr,
         "find_number_of_prime_factors(uint64)",
-        [[8972, "uint64"]],
-        decryptedOutput => expect(parseInt(decryptedOutput, 16)).toEqual(2)
+        [[input, "uint64"]],
+        decryptedOutput => expect(parseInt(decryptedOutput, 16)).toEqual(expectedOutput)
       );
     },
     constants.TIMEOUT_COMPUTE
   );
 });
+
+// https://js-algorithms.tutorialhorizon.com/2015/09/27/find-all-the-prime-factors-for-the-given-number/
+function findPrimeFactors(num) {
+  const primeFactors = [];
+  while (num % 2 === 0) {
+    primeFactors.push(2);
+    num = num / 2;
+  }
+
+  const sqrtNum = Math.sqrt(num);
+  for (var i = 3; i <= sqrtNum; i++) {
+    while (num % i === 0) {
+      primeFactors.push(i);
+      num = num / i;
+    }
+  }
+
+  if (num > 2) {
+    primeFactors.push(num);
+  }
+  return primeFactors;
+}
