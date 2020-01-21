@@ -56,4 +56,4 @@ jobs:
           done
       - name: Test
         working-directory: ./docker-environment
-        run: docker-compose exec -T client make test
+        run: docker-compose exec -T client yarn test
