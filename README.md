@@ -15,7 +15,7 @@ This setup is only relevant for developers interested in manually debugging some
     cd integration-tests/integration-tests
     ```
 
-    Note: Inside `integration-tests/integration-tests/` so when `local_init.bash` will create the `../build/` directory it won't pollute the parent directory of `integration-tests/` which is probably `$HOME/projects`.
+    Note: We clone to `integration-tests/integration-tests/` so when we run `local_init.bash` and it'll create the `../build/` directory it won't pollute the parent directory of `integration-tests/` which is probably `$HOME/projects`.
 
 2.  Clone [docker-environment](https://github.com/enigmampc/docker-environment) elsewhere in your computer:
 
