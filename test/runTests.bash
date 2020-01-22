@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# This file is here for backwards compatabily reasons
-# (The Makfile in docker-environment calls it)
+# This file is kept for backwards compatibily reasons
+# (The Makefile in docker-environment calls it)
 
 yarn test
