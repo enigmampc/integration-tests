@@ -57,9 +57,8 @@ describe("constructor_set_state_12", () => {
         [
           [2, "uint256"],
           [3, "uint256"],
-          // the address argument must be an existing contract address, otherwise this test that is supposed to fail
-          // will always succeed in Ganache.
-          // Using EnigmaContractAddress as long as it never has a function called 'record()'
+          // the address argument must be an existing contract address, otherwise this test that is supposed to fail will always succeed in Ganache.
+          // Using EnigmaContractAddress as long as it never has a function named 'record()'
           [EnigmaContractAddress, "address"]
         ],
         eeConstants.ETH_STATUS_FAILED_ETH,
