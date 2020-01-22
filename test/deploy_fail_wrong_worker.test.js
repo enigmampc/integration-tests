@@ -1,32 +1,19 @@
-/* eslint-disable require-jsdoc */
 const fs = require("fs");
-import os from "os";
 const path = require("path");
 const Web3 = require("web3");
-import { Enigma, utils, eeConstants, Task } from "../enigmaLoader";
-import {
-  EnigmaContract,
-  EnigmaTokenContract,
-  EnigmaContractAddress,
-  EnigmaTokenContractAddress,
-  proxyAddress,
-  ethNodeAddr
-} from "../contractLoader";
-import EthCrypto from "eth-crypto";
-import EventEmitter from "eventemitter3";
-import * as constants from "../testConstants";
+const { Enigma, utils, eeConstants, Task } = require("../enigmaLoader");
+const { EnigmaContractAddress, EnigmaTokenContractAddress, proxyAddress, ethNodeAddr } = require("../contractLoader");
+const EthCrypto = require("eth-crypto");
+const EventEmitter = require("eventemitter3");
+const constants = require("../testConstants");
+const { sleep, ethStatusNameToCode } = require("../scUtils");
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-describe("Enigma tests", () => {
+describe("Fail to deploy because of wrong worker", () => {
   let accounts;
   let web3;
   let enigma;
-  let epochSize;
   let workerAddress;
-  it("initializes", () => {
+  beforeAll(() => {
     const provider = new Web3.providers.HttpProvider(ethNodeAddr);
     web3 = new Web3(provider);
     return web3.eth.getAccounts().then(result => {
@@ -43,7 +30,7 @@ describe("Enigma tests", () => {
   });
 
   function createWrongWorkerTask(fn, args, gasLimit, gasPx, sender, scAddrOrPreCode, isContractDeploymentTask) {
-    let emitter = new EventEmitter();
+    const emitter = new EventEmitter();
     (async () => {
       const nonce = parseInt(await enigma.enigmaContract.methods.getUserTaskDeployments(sender).call());
       const scAddr = isContractDeploymentTask ? utils.generateScAddr(sender, nonce) : scAddrOrPreCode;
@@ -165,39 +152,35 @@ describe("Enigma tests", () => {
     return emitter;
   }
 
-  let scTask2;
   it(
-    "should deploy secret contract",
+    "should fail to deploy because of wrong worker",
     async () => {
-      let scTaskFn = "construct()";
-      let scTaskArgs = "";
-      let scTaskGasLimit = 1000000;
-      let scTaskGasPx = utils.toGrains(1);
-      let preCode;
-      try {
-        preCode = fs.readFileSync(path.resolve(__dirname, "../secretContracts/calculator.wasm"));
-      } catch (e) {
-        console.log("Error:", e.stack);
-      }
+      const scTaskFn = "construct()";
+      const scTaskArgs = "";
+      const scTaskGasLimit = 1000000;
+      const scTaskGasPx = utils.toGrains(1);
+      const preCode = fs.readFileSync(path.resolve(__dirname, "../secretContracts/calculator.wasm"));
+
       let retryCount = 0;
+      let scTask2;
       while (true) {
         try {
           scTask2 = await new Promise((resolve, reject) => {
             createWrongWorkerTask(scTaskFn, scTaskArgs, scTaskGasLimit, scTaskGasPx, accounts[0], preCode, true)
-              .on(eeConstants.CREATE_TASK, receipt => resolve(receipt))
-              .on(eeConstants.ERROR, error => reject(error));
+              .on(eeConstants.CREATE_TASK, resolve)
+              .on(eeConstants.ERROR, reject);
           });
           scTask2 = await new Promise((resolve, reject) => {
             enigma
               .createTaskRecord(scTask2)
-              .on(eeConstants.CREATE_TASK_RECORD, result => resolve(result))
-              .on(eeConstants.ERROR, error => reject(error));
+              .on(eeConstants.CREATE_TASK_RECORD, resolve)
+              .on(eeConstants.ERROR, reject);
           });
           await new Promise((resolve, reject) => {
             enigma
               .sendTaskInput(scTask2)
-              .on(eeConstants.DEPLOY_SECRET_CONTRACT_RESULT, receipt => resolve(receipt))
-              .on(eeConstants.ERROR, error => reject(error));
+              .on(eeConstants.DEPLOY_SECRET_CONTRACT_RESULT, resolve)
+              .on(eeConstants.ERROR, reject);
           });
           break;
         } catch (err) {
@@ -209,33 +192,21 @@ describe("Enigma tests", () => {
           }
         }
       }
-    },
-    constants.TIMEOUT_FAILDEPLOY
-  );
 
-  it(
-    "should get the failed receipt",
-    async () => {
       let i = 0;
       do {
         await sleep(1000);
         scTask2 = await enigma.getTaskRecordStatus(scTask2);
-        process.stdout.write("Waiting. Current Task Status is " + scTask2.ethStatus + "\r");
         i++;
-      } while (scTask2.ethStatus === 1 && i < 6);
-      expect(scTask2.ethStatus).toEqual(1);
-      process.stdout.write("Completed. Final Task Status is " + scTask2.ethStatus + "\n");
+      } while (scTask2.ethStatus === ethStatusNameToCode["ETH_STATUS_CREATED"] && i < 6);
+      expect(scTask2.ethStatus).toEqual(ethStatusNameToCode["ETH_STATUS_CREATED"]);
+
+      const isDeployed = await enigma.admin.isDeployed(scTask2.scAddr);
+      expect(isDeployed).toEqual(false);
+
+      const codeHash = await enigma.admin.getCodeHash(scTask2.scAddr);
+      expect(codeHash).toEqual("0x0000000000000000000000000000000000000000000000000000000000000000");
     },
     constants.TIMEOUT_FAILDEPLOY
   );
-
-  it("should fail to verify deployed contract", async () => {
-    const result = await enigma.admin.isDeployed(scTask2.scAddr);
-    expect(result).toEqual(false);
-  });
-
-  it("should fail to get deployed contract bytecode hash", async () => {
-    const result = await enigma.admin.getCodeHash(scTask2.scAddr);
-    expect(result).toEqual("0x0000000000000000000000000000000000000000000000000000000000000000");
-  });
 });
