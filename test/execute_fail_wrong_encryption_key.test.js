@@ -1,45 +1,37 @@
-/* eslint-disable require-jsdoc */
-const fs = require("fs");
-import os from "os";
 const path = require("path");
 const Web3 = require("web3");
-import { Enigma, utils, eeConstants, Task } from "../enigmaLoader";
-import {
-  EnigmaContract,
-  EnigmaTokenContract,
-  EnigmaContractAddress,
-  EnigmaTokenContractAddress,
-  proxyAddress,
-  ethNodeAddr
-} from "../contractLoader";
-import EventEmitter from "eventemitter3";
+const { Enigma, utils, eeConstants, Task } = require("../enigmaLoader");
+const { EnigmaContractAddress, EnigmaTokenContractAddress, proxyAddress, ethNodeAddr } = require("../contractLoader");
+const EventEmitter = require("eventemitter3");
 const constants = require("../testConstants");
+const { sleep, ethStatusNameToCode, testDeployHelper } = require("../scUtils");
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-describe("Enigma tests", () => {
+describe("Fail to execute because of wrong encryption key", () => {
+  let workerAddress;
   let accounts;
   let web3;
   let enigma;
-  let epochSize;
-  let workerAddress;
-  it("initializes", () => {
-    const provider = new Web3.providers.HttpProvider(ethNodeAddr);
-    web3 = new Web3(provider);
-    return web3.eth.getAccounts().then(result => {
-      accounts = result;
-      enigma = new Enigma(web3, EnigmaContractAddress, EnigmaTokenContractAddress, proxyAddress, {
-        gas: 4712388,
-        gasPrice: 100000000000,
-        from: accounts[0]
-      });
-      enigma.admin();
-      enigma.setTaskKeyPair("cupcake");
-      expect(Enigma.version()).toEqual("0.0.1");
+  let calculatorAddr;
+
+  beforeAll(async () => {
+    web3 = new Web3(new Web3.providers.HttpProvider(ethNodeAddr));
+    accounts = await web3.eth.getAccounts();
+    enigma = new Enigma(web3, EnigmaContractAddress, EnigmaTokenContractAddress, proxyAddress, {
+      gas: 4712388,
+      gasPrice: 100000000000,
+      from: accounts[0]
     });
-  });
+    enigma.admin();
+    enigma.setTaskKeyPair("cupcake");
+    expect(Enigma.version()).toEqual("0.0.1");
+
+    const deployTask = await testDeployHelper(
+      enigma,
+      accounts[0],
+      path.resolve(__dirname, "../secretContracts/calculator.wasm")
+    );
+    calculatorAddr = deployTask.scAddr;
+  }, constants.TIMEOUT_DEPLOY);
 
   function createWrongEncryptionKeyTask(fn, args, gasLimit, gasPx, sender, scAddrOrPreCode, isContractDeploymentTask) {
     let emitter = new EventEmitter();
@@ -74,13 +66,7 @@ describe("Enigma tests", () => {
           enigma.client.request(
             "getWorkerEncryptionKey",
             { workerAddress: workerAddress, userPubKey: publicKey },
-            (err, response) => {
-              if (err) {
-                reject(err);
-                return;
-              }
-              resolve(response);
-            }
+            (err, response) => (err ? reject(err) : resolve(response))
           );
         });
         const { result, id } = getWorkerEncryptionKeyResult;
@@ -125,65 +111,49 @@ describe("Enigma tests", () => {
     return emitter;
   }
 
-  const homedir = os.homedir();
-  const calculatorAddr = fs.readFileSync("/tmp/enigma/addr-calculator.txt", "utf-8");
-  let task;
   it(
-    "should execute compute task",
+    "should fail executing compute task with wrong encryption keys",
     async () => {
-      let taskFn = "sub(uint256,uint256)";
-      let taskArgs = [[76, "uint256"], [17, "uint256"]];
-      let taskGasLimit = 100000;
-      let taskGasPx = utils.toGrains(1);
+      const taskFn = "sub(uint256,uint256)";
+      const taskArgs = [
+        [76, "uint256"],
+        [17, "uint256"]
+      ];
+      const taskGasLimit = 100000;
+      const taskGasPx = utils.toGrains(1);
 
-      task = await new Promise((resolve, reject) => {
+      let task = await new Promise((resolve, reject) => {
         createWrongEncryptionKeyTask(taskFn, taskArgs, taskGasLimit, taskGasPx, accounts[0], calculatorAddr, false)
-          .on(eeConstants.CREATE_TASK, result => resolve(result))
-          .on(eeConstants.ERROR, error => reject(error));
+          .on(eeConstants.CREATE_TASK, resolve)
+          .on(eeConstants.ERROR, reject);
       });
       task = await new Promise((resolve, reject) => {
         enigma
           .createTaskRecord(task)
-          .on(eeConstants.CREATE_TASK_RECORD, result => resolve(result))
-          .on(eeConstants.ERROR, error => reject(error));
+          .on(eeConstants.CREATE_TASK_RECORD, resolve)
+          .on(eeConstants.ERROR, reject);
       });
       await new Promise((resolve, reject) => {
         enigma
           .sendTaskInput(task)
-          .on(eeConstants.SEND_TASK_INPUT_RESULT, receipt => resolve(receipt))
-          .on(eeConstants.ERROR, error => reject(error));
+          .on(eeConstants.SEND_TASK_INPUT_RESULT, resolve)
+          .on(eeConstants.ERROR, reject);
       });
-    },
-    constants.TIMEOUT_COMPUTE
-  );
 
-  it("should get the pending task", async () => {
-    task = await enigma.getTaskRecordStatus(task);
-    expect(task.ethStatus).toEqual(1);
-  });
+      task = await enigma.getTaskRecordStatus(task);
+      expect(task.ethStatus).toEqual(ethStatusNameToCode["ETH_STATUS_CREATED"]);
 
-  it(
-    "should get the failed task receipt",
-    async () => {
       do {
         await sleep(1000);
         task = await enigma.getTaskRecordStatus(task);
-        process.stdout.write("Waiting. Current Task Status is " + task.ethStatus + "\r");
-      } while (task.ethStatus !== 3);
-      expect(task.ethStatus).toEqual(3);
-      process.stdout.write("Completed. Final Task Status is " + task.ethStatus + "\n");
-    },
-    constants.TIMEOUT_COMPUTE
-  );
+      } while (task.ethStatus !== ethStatusNameToCode["ETH_STATUS_FAILED"]);
+      expect(task.ethStatus).toEqual(ethStatusNameToCode["ETH_STATUS_FAILED"]);
 
-  it(
-    "should get the failed result",
-    async () => {
       task = await new Promise((resolve, reject) => {
         enigma
           .getTaskResult(task)
-          .on(eeConstants.GET_TASK_RESULT_RESULT, result => resolve(result))
-          .on(eeConstants.ERROR, error => reject(error));
+          .on(eeConstants.GET_TASK_RESULT_RESULT, resolve)
+          .on(eeConstants.ERROR, reject);
       });
       expect(task.engStatus).toEqual("FAILED");
       expect(task.encryptedAbiEncodedOutputs).toBeTruthy();

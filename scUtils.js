@@ -148,6 +148,9 @@ const ethStatusNameToCode = {
   ETH_STATUS_FAILED_RETURN: 5
 };
 
+module.exports.ethStatusCodeToName = ethStatusCodeToName;
+module.exports.ethStatusNameToCode = ethStatusNameToCode;
+
 module.exports.testDeployFailureHelper = async function(
   enigma,
   account,
