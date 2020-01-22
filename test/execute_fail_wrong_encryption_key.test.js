@@ -158,6 +158,13 @@ describe("Fail to execute because of wrong encryption key", () => {
       expect(task.engStatus).toEqual("FAILED");
       expect(task.encryptedAbiEncodedOutputs).toBeTruthy();
       expect(task.workerTaskSig).toBeTruthy();
+
+      try {
+        await enigma.decryptTaskResult(task);
+        expect(false).toBeTruthy();
+      } catch (err) {
+        expect(err.message).toEqual("decipher did not finish");
+      }
     },
     constants.TIMEOUT_COMPUTE
   );
