@@ -98,7 +98,6 @@ module.exports.testComputeFailureHelper = async function(
   });
   if (expectedEthStatus === eeConstants.ETH_STATUS_FAILED_ETH) {
     // TODO: what should computeTaskResult & decryptedTaskResult be?
-    // Sometimes it's populated and sometimes not
     return;
   }
 
