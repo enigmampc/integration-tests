@@ -97,7 +97,7 @@ module.exports.testComputeFailureHelper = async function(
       .on(eeConstants.ERROR, reject);
   });
   if (expectedEthStatus === eeConstants.ETH_STATUS_FAILED_ETH) {
-    expect(computeTaskResult.engStatus).toEqual("SUCCESS");
+    expect(computeTaskResult.engStatus).toEqual(null);
   } else {
     expect(computeTaskResult.engStatus).toEqual("FAILED");
   }
