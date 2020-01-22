@@ -76,13 +76,7 @@ describe("Fail to deploy because of wrong worker", () => {
           enigma.client.request(
             "getWorkerEncryptionKey",
             { workerAddress: wrongWorkerAddress, userPubKey: publicKey },
-            (err, response) => {
-              if (err) {
-                reject(err);
-                return;
-              }
-              resolve(response);
-            }
+            (err, response) => (err ? reject(err) : resolve(response))
           );
         });
         const { result, id } = getWorkerEncryptionKeyResult;

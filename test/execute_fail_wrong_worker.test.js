@@ -1,46 +1,38 @@
-/* eslint-disable require-jsdoc */
-const fs = require("fs");
-import os from "os";
 const path = require("path");
 const Web3 = require("web3");
-import { Enigma, utils, eeConstants, Task } from "../enigmaLoader";
-import {
-  EnigmaContract,
-  EnigmaTokenContract,
-  EnigmaContractAddress,
-  EnigmaTokenContractAddress,
-  proxyAddress,
-  ethNodeAddr
-} from "../contractLoader";
-import EthCrypto from "eth-crypto";
-import EventEmitter from "eventemitter3";
+const { Enigma, utils, eeConstants, Task } = require("../enigmaLoader");
+const { EnigmaContractAddress, EnigmaTokenContractAddress, proxyAddress, ethNodeAddr } = require("../contractLoader");
+const EthCrypto = require("eth-crypto");
+const EventEmitter = require("eventemitter3");
 const constants = require("../testConstants");
+const { sleep, testDeployHelper, ethStatusNameToCode } = require("../scUtils");
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-describe("Enigma tests", () => {
+describe("Fail to execute because of wrong worker", () => {
   let accounts;
   let web3;
   let enigma;
-  let epochSize;
   let workerAddress;
-  it("initializes", () => {
-    const provider = new Web3.providers.HttpProvider(ethNodeAddr);
-    web3 = new Web3(provider);
-    return web3.eth.getAccounts().then(result => {
-      accounts = result;
-      enigma = new Enigma(web3, EnigmaContractAddress, EnigmaTokenContractAddress, proxyAddress, {
-        gas: 4712388,
-        gasPrice: 100000000000,
-        from: accounts[0]
-      });
-      enigma.admin();
-      enigma.setTaskKeyPair("cupcake");
-      expect(Enigma.version()).toEqual("0.0.1");
+  let calculatorAddr;
+
+  beforeAll(async () => {
+    web3 = new Web3(new Web3.providers.HttpProvider(ethNodeAddr));
+    accounts = await web3.eth.getAccounts();
+    enigma = new Enigma(web3, EnigmaContractAddress, EnigmaTokenContractAddress, proxyAddress, {
+      gas: 4712388,
+      gasPrice: 100000000000,
+      from: accounts[0]
     });
-  });
+    enigma.admin();
+    enigma.setTaskKeyPair("cupcake");
+    expect(Enigma.version()).toEqual("0.0.1");
+
+    const deployTask = await testDeployHelper(
+      enigma,
+      accounts[0],
+      path.resolve(__dirname, "../secretContracts/calculator.wasm")
+    );
+    calculatorAddr = deployTask.scAddr;
+  }, constants.TIMEOUT_DEPLOY);
 
   function createWrongWorkerTask(fn, args, gasLimit, gasPx, sender, scAddrOrPreCode, isContractDeploymentTask) {
     let emitter = new EventEmitter();
@@ -156,50 +148,45 @@ describe("Enigma tests", () => {
     return emitter;
   }
 
-  const homedir = os.homedir();
-  const calculatorAddr = fs.readFileSync("/tmp/enigma/addr-calculator.txt", "utf-8");
-  let task;
-  it("should execute compute task", async () => {
-    let taskFn = "sub(uint256,uint256)";
-    let taskArgs = [[76, "uint256"], [17, "uint256"]];
-    let taskGasLimit = 100000;
-    let taskGasPx = utils.toGrains(1);
-    task = await new Promise((resolve, reject) => {
-      createWrongWorkerTask(taskFn, taskArgs, taskGasLimit, taskGasPx, accounts[0], calculatorAddr, false)
-        .on(eeConstants.CREATE_TASK, result => resolve(result))
-        .on(eeConstants.ERROR, error => reject(error));
-    });
-    task = await new Promise((resolve, reject) => {
-      enigma
-        .createTaskRecord(task)
-        .on(eeConstants.CREATE_TASK_RECORD, result => resolve(result))
-        .on(eeConstants.ERROR, error => reject(error));
-    });
-    await new Promise((resolve, reject) => {
-      enigma
-        .sendTaskInput(task)
-        .on(eeConstants.SEND_TASK_INPUT_RESULT, receipt => resolve(receipt))
-        .on(eeConstants.ERROR, error => reject(error));
-    });
-  });
-
-  it("should get the pending task", async () => {
-    task = await enigma.getTaskRecordStatus(task);
-    expect(task.ethStatus).toEqual(1);
-  });
-
   it(
-    "should get the failed task receipt",
+    "should execute compute task",
     async () => {
+      let task;
+      const taskFn = "sub(uint256,uint256)";
+      const taskArgs = [
+        [76, "uint256"],
+        [17, "uint256"]
+      ];
+      const taskGasLimit = 100000;
+      const taskGasPx = utils.toGrains(1);
+      task = await new Promise((resolve, reject) => {
+        createWrongWorkerTask(taskFn, taskArgs, taskGasLimit, taskGasPx, accounts[0], calculatorAddr, false)
+          .on(eeConstants.CREATE_TASK, result => resolve(result))
+          .on(eeConstants.ERROR, error => reject(error));
+      });
+      task = await new Promise((resolve, reject) => {
+        enigma
+          .createTaskRecord(task)
+          .on(eeConstants.CREATE_TASK_RECORD, result => resolve(result))
+          .on(eeConstants.ERROR, error => reject(error));
+      });
+      await new Promise((resolve, reject) => {
+        enigma
+          .sendTaskInput(task)
+          .on(eeConstants.SEND_TASK_INPUT_RESULT, receipt => resolve(receipt))
+          .on(eeConstants.ERROR, error => reject(error));
+      });
+
+      task = await enigma.getTaskRecordStatus(task);
+      expect(task.ethStatus).toEqual(1);
+
       let i = 0;
       do {
         await sleep(1000);
         task = await enigma.getTaskRecordStatus(task);
-        process.stdout.write("Waiting. Current Task Status is " + task.ethStatus + "\r");
         i++;
-      } while (task.ethStatus === 1 && i < 6);
-      expect(task.ethStatus).toEqual(1);
-      process.stdout.write("Completed. Final Task Status is " + task.ethStatus + "\n");
+      } while (task.ethStatus === ethStatusNameToCode["ETH_STATUS_CREATED"] && i < 6);
+      expect(task.ethStatus).toEqual(ethStatusNameToCode["ETH_STATUS_CREATED"]);
     },
     constants.TIMEOUT_COMPUTE
   );
