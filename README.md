@@ -15,9 +15,7 @@ This setup is only relevant for developers interested in manually debugging some
     cd integration-tests/integration-tests
     ```
 
-    Note: We clone to `integration-tests/integration-tests/` so when we run `local_init.bash` and it'll create the `../build/` directory it won't pollute the parent directory of `integration-tests/` which is probably `$HOME/projects`.
-
-2.  Clone [docker-environment](https://github.com/enigmampc/docker-environment) elsewhere in your computer:
+2)  Clone [docker-environment](https://github.com/enigmampc/docker-environment) elsewhere in your computer:
 
     ```bash
     git clone https://github.com/enigmampc/docker-environment
@@ -40,7 +38,7 @@ This setup is only relevant for developers interested in manually debugging some
 
     You can run the script `./watch_is_ready.sh` to see when the network is ready (at least one worker registered).
 
-3)  Once the network is fully up and running, run the following script once:
+3.  Once the network is fully up and running, run the following script once:
 
     ```bash
     ./local_init.bash
@@ -48,7 +46,7 @@ This setup is only relevant for developers interested in manually debugging some
 
     Note: in the `wget` line inside `local_init.bash` you can point it to the right `enigma-contract` branch if it's not `develop`.
 
-4)  Then you can run the integration tests:
+4.  Then you can run the integration tests:
 
     ```
     test/runTests.bash
