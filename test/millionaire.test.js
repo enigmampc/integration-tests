@@ -62,6 +62,9 @@ describe("millionaire", () => {
         ],
         decryptedOutput => expect(decryptedOutput).toEqual("") /* void */
       );
+      await testComputeHelper(enigma, accounts[0], scAddr, "compute_richest()", [], decryptedOutput =>
+        expect(decryptedOutput).toEqual(utils.remove0x(millionaire2))
+      );
     },
     constants.TIMEOUT_COMPUTE
   );
