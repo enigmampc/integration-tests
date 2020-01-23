@@ -3,33 +3,57 @@ name: CI
 on: [push]
 
 jobs:
-
   test:
     runs-on: ubuntu-latest
     steps:
-    - name: Build and test
-      run: |
-        export BRANCH_NAME="$(echo $GITHUB_REF | grep -o '[^/]\+$')"
-        export MATCHING_BRANCH_DOCKER="$(git ls-remote --heads https://github.com/enigmampc/docker-environment.git ${BRANCH_NAME} | wc -l)"
-        if [[ "$MATCHING_BRANCH_DOCKER" -eq 1 ]]; then
-          # which includes master and develop because these always exist
-          git clone --single-branch --branch ${BRANCH_NAME} https://github.com/enigmampc/docker-environment.git
-        else
-          # otherwise we are on a feature branch, and we'll build against develop
-          git clone --single-branch --branch develop https://github.com/enigmampc/docker-environment.git
-        fi
-        cd docker-environment && cp .env.template .env
-        if [[ "$BRANCH_NAME" == "master" ]]; then
-          DOCKER_TAG=latest
-          make clone-contract BRANCH=master
-        else
-          DOCKER_TAG=develop
-          make clone-contract BRANCH=develop
-        fi
-        sed -i "s/DOCKER_TAG=latest/DOCKER_TAG=${DOCKER_TAG}/" .env;
-        docker pull enigmampc/worker_sw:$DOCKER_TAG
-        docker pull enigmampc/key_management_sw:$DOCKER_TAG
-        docker pull enigmampc/contract:$DOCKER_TAG
-        make clone-client-solo BRANCH=${BRANCH_NAME}
-        make build-client DOCKER_TAG=$DOCKER_TAG
-        docker-compose up --exit-code-from client & sleep 240 && docker-compose exec -T client make test
+      - name: Find $BRANCH_NAME
+        run: echo "::set-env name=BRANCH_NAME::$(echo "$GITHUB_REF" | grep -o '[^/]\+$')"
+      - name: Find $MATCHING_BRANCH_DOCKER
+        run: echo "::set-env name=MATCHING_BRANCH_DOCKER::$(git ls-remote --heads https://github.com/enigmampc/docker-environment.git "$BRANCH_NAME" | wc -l)"
+      - name: Git Clone
+        run: |
+          if [[ "$MATCHING_BRANCH_DOCKER" -eq 1 ]]; then
+            # which includes master and develop because these always exist
+            git clone --single-branch --branch "$BRANCH_NAME" https://github.com/enigmampc/docker-environment.git
+          else
+            # otherwise we are on a feature branch, and we'll build against develop
+            git clone --single-branch --branch develop https://github.com/enigmampc/docker-environment.git
+          fi
+      - name: Build Docker Images
+        working-directory: ./docker-environment
+        run: |
+          cp .env.template .env
+          if [[ "$BRANCH_NAME" == "master" ]]; then
+            DOCKER_TAG=latest
+            make clone-contract BRANCH=master
+          else
+            DOCKER_TAG=develop
+            make clone-contract BRANCH=develop
+          fi
+          sed -i "s/DOCKER_TAG=latest/DOCKER_TAG=${DOCKER_TAG}/" .env
+          docker pull "enigmampc/worker_sw:${DOCKER_TAG}"
+          docker pull "enigmampc/key_management_sw:${DOCKER_TAG}"
+          docker pull "enigmampc/contract:${DOCKER_TAG}"
+          make clone-client-solo BRANCH="${BRANCH_NAME}"
+          make build-client DOCKER_TAG="${DOCKER_TAG}"
+      - name: Start Network & Wait for it to be ready
+        working-directory: ./docker-environment
+        run: |
+          docker-compose up --scale worker=3 &
+          until ./is_ready.sh; do
+            docker-compose ps
+            echo "Still not ready"
+            echo "Workers: $(docker-compose ps |
+              grep -P 'worker|bootstrap' |
+              wc -l)"
+            echo "Registered Workers: $(docker-compose logs --tail 1000 km |
+              grep -P 'get_active_workers|Confirmed epoch with worker params' |
+              tail -1 |
+              grep -Poi '0x[a-f0-9]+' |
+              sort -u |
+              wc -l)"
+            sleep 10
+          done
+      - name: Test
+        working-directory: ./docker-environment
+        run: docker-compose exec -T client yarn test
